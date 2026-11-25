@@ -4793,13 +4793,6 @@ html[data-device="phone"] #db-nse-svg{ overflow:visible; margin-left:34px; width
 html[data-device="phone"] .db-headbar{ border-radius:0 !important; }
 html[data-device="phone"] .db-headbar > *{ background:none !important; border:0 !important; box-shadow:none !important; padding:0 !important; }
 
-/* compact insight rows: chart thumbnails are unreadable at 96px, show a tinted chart tile instead (photos stay) */
-html[data-device="phone"] #insights-track .insight-card:not(:first-child) .insight-inset:not(.human-media),
-html[data-device="phone"] .theme-listing-grid .insight-card.listing:not(:first-child) .insight-inset:not(.human-media){
-  background:color-mix(in srgb, var(--brand-teal,#009FA2) 14%, #fff) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%231d6b74' stroke-width='1.8' stroke-linecap='round'%3E%3Cpath d='M4 20h16'/%3E%3Cpath d='M7 16v-5M12 16V6M17 16v-8'/%3E%3C/svg%3E") center/40px no-repeat !important;
-}
-html[data-device="phone"] #insights-track .insight-card:not(:first-child) .insight-inset:not(.human-media) > *,
-html[data-device="phone"] .theme-listing-grid .insight-card.listing:not(:first-child) .insight-inset:not(.human-media) > *{ display:none !important; }
 html[data-device="phone"] .insight-card:not(:first-child) .insight-text h3{ display:block !important; -webkit-line-clamp:unset !important; overflow:visible !important; max-height:none !important; }
 
 /* phones held sideways (wider than 720px): keep the desktop top bar but make it fit */
@@ -4821,6 +4814,14 @@ html[data-device="phone"] .dh-about,
 html[data-device="phone"] .dh-src,
 html[data-device="phone"] .dh-sub{ overflow-wrap:anywhere; word-break:break-word; max-width:100%; }
 html[data-device="phone"] .dh-trust .dh-tbar{ flex-wrap:wrap; }
+
+/* compact insight rows: keep a small chart preview (white panel, slightly larger thumbnail) */
+html[data-device="phone"] #insights-track .insight-card:not(:first-child),
+html[data-device="phone"] .theme-listing-grid .insight-card.listing:not(:first-child){ grid-template-columns:112px 1fr; }
+html[data-device="phone"] #insights-track .insight-card:not(:first-child) .insight-inset,
+html[data-device="phone"] .theme-listing-grid .insight-card.listing:not(:first-child) .insight-inset{ width:112px !important; height:112px !important; }
+html[data-device="phone"] #insights-track .insight-card:not(:first-child) .insight-inset:not(.human-media),
+html[data-device="phone"] .theme-listing-grid .insight-card.listing:not(:first-child) .insight-inset:not(.human-media){ background:#fff !important; border:1px solid var(--line,#e6e8e8); padding:5px !important; display:flex !important; align-items:center; justify-content:center; }
 
 /* ---- width-based copy: works even if the script fails or reports the wrong size ---- */
 @media (max-width:720px){
@@ -4966,13 +4967,6 @@ html #db-nse-svg{ overflow:visible; margin-left:34px; width:calc(100% - 34px) !i
 html .db-headbar{ border-radius:0 !important; }
 html .db-headbar > *{ background:none !important; border:0 !important; box-shadow:none !important; padding:0 !important; }
 
-/* compact insight rows: chart thumbnails are unreadable at 96px, show a tinted chart tile instead (photos stay) */
-html #insights-track .insight-card:not(:first-child) .insight-inset:not(.human-media),
-html .theme-listing-grid .insight-card.listing:not(:first-child) .insight-inset:not(.human-media){
-  background:color-mix(in srgb, var(--brand-teal,#009FA2) 14%, #fff) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%231d6b74' stroke-width='1.8' stroke-linecap='round'%3E%3Cpath d='M4 20h16'/%3E%3Cpath d='M7 16v-5M12 16V6M17 16v-8'/%3E%3C/svg%3E") center/40px no-repeat !important;
-}
-html #insights-track .insight-card:not(:first-child) .insight-inset:not(.human-media) > *,
-html .theme-listing-grid .insight-card.listing:not(:first-child) .insight-inset:not(.human-media) > *{ display:none !important; }
 html .insight-card:not(:first-child) .insight-text h3{ display:block !important; -webkit-line-clamp:unset !important; overflow:visible !important; max-height:none !important; }
 
 
@@ -4986,6 +4980,14 @@ html .dh-about,
 html .dh-src,
 html .dh-sub{ overflow-wrap:anywhere; word-break:break-word; max-width:100%; }
 html .dh-trust .dh-tbar{ flex-wrap:wrap; }
+
+/* compact insight rows: keep a small chart preview (white panel, slightly larger thumbnail) */
+html #insights-track .insight-card:not(:first-child),
+html .theme-listing-grid .insight-card.listing:not(:first-child){ grid-template-columns:112px 1fr; }
+html #insights-track .insight-card:not(:first-child) .insight-inset,
+html .theme-listing-grid .insight-card.listing:not(:first-child) .insight-inset{ width:112px !important; height:112px !important; }
+html #insights-track .insight-card:not(:first-child) .insight-inset:not(.human-media),
+html .theme-listing-grid .insight-card.listing:not(:first-child) .insight-inset:not(.human-media){ background:#fff !important; border:1px solid var(--line,#e6e8e8); padding:5px !important; display:flex !important; align-items:center; justify-content:center; }
 
 }
 </style>
