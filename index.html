@@ -1705,6 +1705,7 @@ main,.sitebar-inner,.hero-video__inner{ max-width:calc(var(--page-max) + 2*var(-
 .insight-inset.has-title > svg,.insight-inset.has-title > div:not(.inset-title){ flex:1 1 auto; min-height:0; width:100%; }
 @media (min-width:1280px){ .insight-inset.has-title > .inset-title{ font-size:14px; } }
 </style>
+<style id="fw-retired">.fw-card[data-retired]{ display:none !important; }</style>
 </head>
 <body>
 
@@ -2673,7 +2674,7 @@ main,.sitebar-inner,.hero-video__inner{ max-width:calc(var(--page-max) + 2*var(-
           <div class="promo-tagline">Key insights from ASUSE 2025</div>
           <a class="promo-btn" href="https://www.udaiti.org/ASUSE_Data_Pack_13.11.html" target="_blank" rel="noopener">Explore now <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M7 17 17 7M8 7h9v9"/></svg></a>
         </div>
-        <div class="card promo-card rose fw-card" data-theme-card="infrastructure" hidden>
+        <div class="card promo-card rose fw-card" data-theme-card="infrastructure" data-retired="hidden 26 Nov 2026" hidden>
           <div class="promo-blob"></div>
           <span class="promo-badge">New · July 2026</span>
           <h3>Women spend <em>5 times longer</em> than men on unpaid care work.</h3>
@@ -3213,6 +3214,7 @@ main,.sitebar-inner,.hero-video__inner{ max-width:calc(var(--page-max) + 2*var(-
   function setActiveTheme(themeKey){
     var panel = document.getElementById('featured-work-panel');
     if(!panel) return;
+    if(!panel.querySelector('.fw-card[data-theme-card="' + themeKey + '"]:not([data-retired])')) return;
     panel.querySelectorAll('.fw-card').forEach(function(card){
       card.hidden = card.getAttribute('data-theme-card') !== themeKey;
     });
@@ -3237,6 +3239,8 @@ main,.sitebar-inner,.hero-video__inner{ max-width:calc(var(--page-max) + 2*var(-
   function syncFeatured(){
     var view = document.getElementById('view-insights');
     if(!view || !view.classList.contains('active')) return;
+    if(window.matchMedia && matchMedia('(max-width:720px)').matches) return;
+    if(document.documentElement.getAttribute('data-device') === 'phone') return;
     var line = 160, pick = null;
     themeBlocks.forEach(function(b){ var r = b.getBoundingClientRect(); if(!pick && r.bottom > line) pick = b; });
     if(pick) setActiveTheme(pick.getAttribute('data-theme-key'));
@@ -4790,8 +4794,10 @@ html[data-device="phone"] .db-headbar .dh-src,
 html[data-device="phone"] .db-headbar .dh-sub{ font-size:13px !important; line-height:1.5; }
 
 /* ---------- 9. General phone hygiene ---------- */
-html[data-device="phone"],
-html[data-device="phone"] body{ overflow-x:hidden; }
+/* scroll fix: "hidden" on both html and body turns body into a second scroller on Chrome/Android,
+   which makes the page stick at the bottom. clip stops sideways overflow without creating a scroller. */
+html[data-device="phone"]{ overflow-x:clip !important; overflow-y:visible !important; }
+html[data-device="phone"] body{ overflow-x:clip !important; overflow-y:visible !important; }
 html[data-device="phone"] a, html[data-device="phone"] button{ touch-action:manipulation; }
 
 /* NSE sector chart: long sector names sit left of the viewBox; give them room on phones */
@@ -4832,6 +4838,21 @@ html[data-device="phone"] .theme-listing-grid .insight-card.listing:not(:first-c
 /* compact 112px thumbnails are too small for a title; the headline beside them describes the chart */
 html[data-device="phone"] #insights-track .insight-card:not(:first-child) .inset-title,
 html[data-device="phone"] .theme-listing-grid .insight-card.listing:not(:first-child) .inset-title{ display:none !important; }
+
+/* Data and Insights: featured work cards sit right after their own section (no scroll-driven swapping) */
+html[data-device="phone"] #view-insights .insights-layout{ display:flex !important; flex-direction:column; gap:0; }
+html[data-device="phone"] #view-insights .theme-accordion,
+html[data-device="phone"] #view-insights .featured-work-panel{ display:contents !important; }
+html[data-device="phone"] #view-insights .featured-work-panel > h2{ display:none !important; }
+html[data-device="phone"] #view-insights .theme-block[data-theme-key="employment"]{ order:1; }
+html[data-device="phone"] #view-insights .fw-card[data-theme-card="employment"]{ order:2; }
+html[data-device="phone"] #view-insights .theme-block[data-theme-key="entrepreneurship"]{ order:3; }
+html[data-device="phone"] #view-insights .fw-card[data-theme-card="entrepreneurship"]{ order:4; }
+html[data-device="phone"] #view-insights .theme-block[data-theme-key="infrastructure"]{ order:5; }
+html[data-device="phone"] #view-insights .fw-card:not([data-retired]){ display:flex !important; margin:16px 0 28px !important; }
+html[data-device="phone"] #view-insights .fw-card[data-retired]{ display:none !important; }
+html[data-device="phone"] #view-insights .theme-block{ margin:0 !important; }
+html[data-device="phone"] #db-nse-inset{ overflow:visible !important; max-height:none !important; }
 
 /* ---- width-based copy: works even if the script fails or reports the wrong size ---- */
 @media (max-width:720px){
@@ -4968,8 +4989,10 @@ html .db-headbar .dh-src,
 html .db-headbar .dh-sub{ font-size:13px !important; line-height:1.5; }
 
 /* ---------- 9. General phone hygiene ---------- */
-html,
-html body{ overflow-x:hidden; }
+/* scroll fix: "hidden" on both html and body turns body into a second scroller on Chrome/Android,
+   which makes the page stick at the bottom. clip stops sideways overflow without creating a scroller. */
+html{ overflow-x:clip !important; overflow-y:visible !important; }
+html body{ overflow-x:clip !important; overflow-y:visible !important; }
 html a, html button{ touch-action:manipulation; }
 
 /* NSE sector chart: long sector names sit left of the viewBox; give them room on phones */
@@ -5002,6 +5025,21 @@ html .theme-listing-grid .insight-card.listing:not(:first-child) .insight-inset:
 /* compact 112px thumbnails are too small for a title; the headline beside them describes the chart */
 html #insights-track .insight-card:not(:first-child) .inset-title,
 html .theme-listing-grid .insight-card.listing:not(:first-child) .inset-title{ display:none !important; }
+
+/* Data and Insights: featured work cards sit right after their own section (no scroll-driven swapping) */
+html #view-insights .insights-layout{ display:flex !important; flex-direction:column; gap:0; }
+html #view-insights .theme-accordion,
+html #view-insights .featured-work-panel{ display:contents !important; }
+html #view-insights .featured-work-panel > h2{ display:none !important; }
+html #view-insights .theme-block[data-theme-key="employment"]{ order:1; }
+html #view-insights .fw-card[data-theme-card="employment"]{ order:2; }
+html #view-insights .theme-block[data-theme-key="entrepreneurship"]{ order:3; }
+html #view-insights .fw-card[data-theme-card="entrepreneurship"]{ order:4; }
+html #view-insights .theme-block[data-theme-key="infrastructure"]{ order:5; }
+html #view-insights .fw-card:not([data-retired]){ display:flex !important; margin:16px 0 28px !important; }
+html #view-insights .fw-card[data-retired]{ display:none !important; }
+html #view-insights .theme-block{ margin:0 !important; }
+html #db-nse-inset{ overflow:visible !important; max-height:none !important; }
 
 }
 </style>
