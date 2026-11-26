@@ -1978,7 +1978,10 @@ html[data-device="phone"] a, html[data-device="phone"] button{ touch-action:mani
 /* NSE sector chart: long sector names sit left of the viewBox; give them room on phones */
 html[data-device="phone"] #db-nse-svg{ overflow:visible; margin-left:34px; width:calc(100% - 34px) !important; }
 html[data-device="phone"] .db-headbar{ border-radius:0 !important; }
-html[data-device="phone"] .db-headbar > *{ background:none !important; border:0 !important; box-shadow:none !important; padding:0 !important; }
+html[data-device="phone"] .db-headbar > :not(.btn){ background:none !important; border:0 !important; box-shadow:none !important; padding:0 !important; }
+/* the "Go to dashboard" button keeps a solid, high-contrast style on phones */
+html[data-device="phone"] .db-headbar > .btn.primary{ display:flex !important; align-items:center; justify-content:center; gap:8px; width:100%; min-height:48px; padding:0 20px !important; border-radius:999px !important; background:var(--ui-black,#231F20) !important; color:var(--ui-yellow,#FFD400) !important; border:0 !important; font-weight:700; text-decoration:none; }
+html[data-device="phone"] .db-headbar > .btn.primary .icon{ color:inherit; }
 
 html[data-device="phone"] .insight-card:not(:first-child) .insight-text h3{ display:block !important; -webkit-line-clamp:unset !important; overflow:visible !important; max-height:none !important; }
 
@@ -2173,7 +2176,10 @@ html a, html button{ touch-action:manipulation; }
 /* NSE sector chart: long sector names sit left of the viewBox; give them room on phones */
 html #db-nse-svg{ overflow:visible; margin-left:34px; width:calc(100% - 34px) !important; }
 html .db-headbar{ border-radius:0 !important; }
-html .db-headbar > *{ background:none !important; border:0 !important; box-shadow:none !important; padding:0 !important; }
+html .db-headbar > :not(.btn){ background:none !important; border:0 !important; box-shadow:none !important; padding:0 !important; }
+/* the "Go to dashboard" button keeps a solid, high-contrast style on phones */
+html .db-headbar > .btn.primary{ display:flex !important; align-items:center; justify-content:center; gap:8px; width:100%; min-height:48px; padding:0 20px !important; border-radius:999px !important; background:var(--ui-black,#231F20) !important; color:var(--ui-yellow,#FFD400) !important; border:0 !important; font-weight:700; text-decoration:none; }
+html .db-headbar > .btn.primary .icon{ color:inherit; }
 
 html .insight-card:not(:first-child) .insight-text h3{ display:block !important; -webkit-line-clamp:unset !important; overflow:visible !important; max-height:none !important; }
 
