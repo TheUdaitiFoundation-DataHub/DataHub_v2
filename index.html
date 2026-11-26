@@ -1780,7 +1780,8 @@ main,.sitebar-inner,.hero-video__inner{ max-width:calc(var(--page-max) + 2*var(-
           <input type="search" name="q" placeholder="Search" aria-label="Search DataHub" enterkeyhint="search">
           <button type="submit" class="ns-btn" aria-label="Search"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg></button>
         </form>
-        <div class="nav-item" id="sub-menu">
+        <button type="button" class="fb-open" data-fb-open aria-haspopup="dialog" aria-controls="fb-dlg" title="Share feedback"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 12a8 8 0 0 1-11.6 7.1L4 20l1-4.6A8 8 0 1 1 21 12Z"/><path d="M8.5 11h7M8.5 14h4.5"/></svg><span class="fb-open-txt">Feedback</span></button>
+<div class="nav-item" id="sub-menu">
           <button class="btn sm" aria-expanded="false" aria-controls="sub-pop">Subscribe</button>
           <div class="subscribe-pop" id="sub-pop">
             <h4><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-mail"/></svg>Insights in your inbox</h4>
@@ -4661,6 +4662,225 @@ wrap.addEventListener('focusout',hide);
 })();
 
 </script>
+<style id="feedback-css">
+/* ===== Site feedback (header button + dialog) — 26 Nov 2026 ===== */
+.fb-open{ display:inline-flex; align-items:center; gap:7px; height:40px; padding:6px 16px; border-radius:999px; background:transparent; color:#fff; border:1px solid rgba(255,255,255,.45); font:inherit; font-size:14.5px; font-weight:600; cursor:pointer; white-space:nowrap; }
+.fb-open:hover{ border-color:var(--ui-yellow,#FFD400); color:var(--ui-yellow,#FFD400); }
+.fb-open:focus-visible{ outline:2px solid var(--ui-yellow,#FFD400); outline-offset:2px; }
+.fb-open svg{ width:18px; height:18px; flex:none; fill:none; stroke:currentColor; stroke-width:1.8; stroke-linecap:round; stroke-linejoin:round; }
+dialog.fb-dlg{ width:min(520px, calc(100vw - 32px)); max-height:min(88vh, 760px); padding:0; border:0; border-radius:18px; background:var(--surface,#fff); color:var(--ink,#231F20); box-shadow:0 24px 64px rgba(0,0,0,.28); overflow:auto; }
+dialog.fb-dlg::backdrop{ background:rgba(20,18,19,.55); }
+.fb-dlg form{ padding:24px 26px 22px; display:flex; flex-direction:column; gap:16px; }
+.fb-head{ display:flex; align-items:flex-start; justify-content:space-between; gap:12px; }
+.fb-head h2{ margin:0; font-size:22px; line-height:1.25; }
+.fb-head p{ margin:6px 0 0; font-size:14.5px; line-height:1.5; color:var(--ink-dim,#555); }
+.fb-x{ flex:none; width:40px; height:40px; border-radius:50%; border:0; background:var(--surface-sunken,#f2f3f3); color:inherit; cursor:pointer; display:flex; align-items:center; justify-content:center; }
+.fb-x svg{ width:18px; height:18px; stroke:currentColor; stroke-width:2; fill:none; stroke-linecap:round; }
+.fb-lab{ display:block; font-size:14px; font-weight:600; margin:0 0 8px; }
+.fb-types{ display:flex; flex-wrap:wrap; gap:8px; border:0; padding:0; margin:0; }
+.fb-types legend{ font-size:14px; font-weight:600; margin:0 0 8px; padding:0; }
+.fb-types label{ position:relative; }
+.fb-types input{ position:absolute; opacity:0; inset:0; margin:0; cursor:pointer; }
+.fb-types span{ display:inline-block; padding:8px 14px; border-radius:999px; border:1px solid var(--line,#d9dcdc); font-size:14px; line-height:1.2; }
+.fb-types input:checked + span{ background:var(--brand-teal-ink,#1d6b74); border-color:var(--brand-teal-ink,#1d6b74); color:#fff; }
+.fb-types input:focus-visible + span{ outline:2px solid var(--ui-yellow,#FFD400); outline-offset:2px; }
+.fb-dlg textarea,.fb-dlg input[type=email]{ width:100%; box-sizing:border-box; font:inherit; font-size:16px; line-height:1.5; color:inherit; background:var(--bg,#fff); border:1px solid var(--line,#cfd3d3); border-radius:10px; padding:10px 12px; }
+.fb-dlg textarea{ min-height:120px; resize:vertical; }
+.fb-dlg textarea:focus,.fb-dlg input[type=email]:focus{ outline:2px solid var(--brand-teal,#009FA2); outline-offset:0; border-color:transparent; }
+.fb-meta{ display:flex; justify-content:space-between; gap:12px; font-size:12.5px; color:var(--ink-faint,#6b6f70); margin-top:6px; }
+.fb-err{ color:#b42318; font-size:13.5px; margin:6px 0 0; }
+.fb-check{ display:flex; gap:10px; align-items:flex-start; font-size:14.5px; line-height:1.45; cursor:pointer; }
+.fb-check input{ width:18px; height:18px; margin:2px 0 0; accent-color:var(--brand-teal-ink,#1d6b74); flex:none; }
+.fb-reply[hidden],.fb-dlg form[hidden]{ display:none; }
+.fb-note{ font-size:12.5px; color:var(--ink-faint,#6b6f70); margin:6px 0 0; line-height:1.45; }
+.fb-ctx{ font-size:12.5px; color:var(--ink-faint,#6b6f70); background:var(--surface-sunken,#f4f6f6); border-radius:10px; padding:8px 12px; line-height:1.45; }
+.fb-hp{ position:absolute !important; left:-9999px !important; width:1px; height:1px; overflow:hidden; }
+.fb-actions{ display:flex; align-items:center; gap:12px; flex-wrap:wrap; }
+.fb-send{ height:44px; padding:0 22px; border-radius:999px; border:0; background:var(--ui-black,#231F20); color:var(--ui-yellow,#FFD400); font:inherit; font-size:15px; font-weight:700; cursor:pointer; }
+.fb-send[aria-busy="true"]{ opacity:.6; cursor:progress; }
+.fb-status{ font-size:14px; margin:0; }
+.fb-status.bad{ color:#b42318; }
+.fb-done{ padding:34px 26px 30px; text-align:center; }
+.fb-done[hidden]{ display:none; }
+.fb-done .tick{ width:52px; height:52px; border-radius:50%; background:var(--ui-yellow,#FFD400); color:var(--ui-black,#231F20); display:inline-flex; align-items:center; justify-content:center; margin-bottom:12px; }
+.fb-done .tick svg{ width:26px; height:26px; stroke:currentColor; stroke-width:2.4; fill:none; stroke-linecap:round; stroke-linejoin:round; }
+.fb-done h2{ margin:0 0 6px; font-size:21px; }
+.fb-done p{ margin:0 0 18px; font-size:15px; color:var(--ink-dim,#555); }
+/* phones: icon-only header button, form as a bottom sheet */
+html[data-device="phone"] .fb-open{ width:40px; padding:0; justify-content:center; }
+html[data-device="phone"] .fb-open .fb-open-txt{ position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap; }
+html[data-device="phone"] dialog.fb-dlg{ width:100vw; max-width:100vw; max-height:92dvh; margin:auto 0 0; border-radius:20px 20px 0 0; }
+html[data-device="phone"] .fb-dlg form{ padding:20px 18px calc(18px + env(safe-area-inset-bottom)); }
+@media (max-width:720px){
+  .fb-open{ width:40px; padding:0; justify-content:center; }
+  .fb-open .fb-open-txt{ position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap; }
+  dialog.fb-dlg{ width:100vw; max-width:100vw; max-height:92dvh; margin:auto 0 0; border-radius:20px 20px 0 0; }
+  .fb-dlg form{ padding:20px 18px calc(18px + env(safe-area-inset-bottom)); }
+}
+/* narrower laptops and tablets: icon-only button (tooltip + screen-reader label) and a slightly narrower search, so the nav links keep their room */
+@media (max-width:1599px){
+  .fb-open{ width:40px; padding:0; justify-content:center; }
+  .fb-open .fb-open-txt{ position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap; }
+  .sitebar .nav-actions{ gap:8px !important; }
+}
+@media (min-width:721px) and (max-width:1599px){ .sitebar .nav-search{ min-width:0 !important; width:156px !important; } }
+@media (min-width:721px) and (max-width:1339px){ .sitebar .nav-search{ width:132px !important; } }
+@media (min-width:721px) and (max-width:1180px){ .sitebar .nav-search{ width:110px !important; } }
+/* phones: make room for the icon beside Subscribe */
+html[data-device="phone"] .fb-open{ width:36px; height:36px; }
+html[data-device="phone"] .nav-actions{ gap:6px !important; }
+html[data-device="phone"] #sub-menu > .btn{ padding:0 12px !important; height:36px; min-height:36px; font-size:13.5px !important; }
+@media (max-width:720px){
+  .fb-open{ width:36px; height:36px; }
+  .nav-actions{ gap:6px !important; }
+  #sub-menu > .btn{ padding:0 12px !important; height:36px; min-height:36px; font-size:13.5px !important; }
+}
+@media (max-width:400px){ .sitebar .brand-logo{ height:24px !important; } }
+@media (max-width:345px){ .sitebar .brand-div,.sitebar .brand-text{ display:none !important; } }
+</style>
+
+<dialog class="fb-dlg" id="fb-dlg" aria-labelledby="fb-title">
+  <form id="fb-form" novalidate>
+    <div class="fb-head">
+      <div>
+        <h2 id="fb-title">Share your feedback</h2>
+        <p>Tell us what's useful, what's missing or what looks wrong. It's anonymous unless you choose to leave your email.</p>
+      </div>
+      <button type="button" class="fb-x" data-fb-close aria-label="Close feedback form"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></svg></button>
+    </div>
+
+    <fieldset class="fb-types">
+      <legend>What's it about?</legend>
+      <label><input type="radio" name="type" value="Suggest data or a topic" checked><span>Suggest data or a topic</span></label>
+      <label><input type="radio" name="type" value="Report an error in the data"><span>Report an error in the data</span></label>
+      <label><input type="radio" name="type" value="Something isn't working"><span>Something isn't working</span></label>
+      <label><input type="radio" name="type" value="Other"><span>Other</span></label>
+    </fieldset>
+
+    <div>
+      <label class="fb-lab" for="fb-msg">Your feedback</label>
+      <textarea id="fb-msg" name="message" maxlength="1500" placeholder="For example: state-level data on women in MSMEs would help my research." aria-describedby="fb-msg-err fb-count"></textarea>
+      <div class="fb-meta"><span>Please don't include personal details.</span><span id="fb-count">0 / 1500</span></div>
+      <p class="fb-err" id="fb-msg-err" hidden>Write a few words of feedback first.</p>
+    </div>
+
+    <div>
+      <label class="fb-check"><input type="checkbox" id="fb-want" name="reply"> <span>I'd like the Udaiti team to reply to me</span></label>
+      <div class="fb-reply" id="fb-reply" hidden>
+        <label class="fb-lab" for="fb-email" style="margin-top:12px">Your email</label>
+        <input type="email" id="fb-email" name="email" autocomplete="email" placeholder="name@organisation.org" aria-describedby="fb-email-err fb-email-note">
+        <p class="fb-err" id="fb-email-err" hidden>Enter a valid email so we can reply, or untick the box.</p>
+        <p class="fb-note" id="fb-email-note">We'll only use your email to reply to this feedback.</p>
+      </div>
+    </div>
+
+    <div class="fb-hp" aria-hidden="true"><label>Leave this empty <input type="text" name="website" tabindex="-1" autocomplete="off"></label></div>
+
+    <p class="fb-ctx" id="fb-ctx">Sent with: the page you're on.</p>
+
+    <div class="fb-actions">
+      <button type="submit" class="fb-send" id="fb-send">Send feedback</button>
+      <p class="fb-status" id="fb-status" role="status" aria-live="polite"></p>
+    </div>
+  </form>
+
+  <div class="fb-done" id="fb-done" hidden>
+    <span class="tick" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 12.5 10 17l9-10"/></svg></span>
+    <h2>Thanks for your feedback</h2>
+    <p id="fb-done-txt">It goes straight to the DataHub team.</p>
+    <button type="button" class="fb-send" data-fb-close>Close</button>
+  </div>
+</dialog>
+
+<script id="feedback-js">
+/* ===== Site feedback — 26 Nov 2026 =====
+   Where submissions go: set FEEDBACK.endpoint below. Until it is set, the form
+   says plainly that nothing was sent (it never pretends to succeed).
+   format 'json' = POST application/json (Formspree, Basin, a WordPress REST route)
+   format 'text' = POST text/plain JSON (Google Apps Script web app writing to a Sheet)
+   Remember: add the endpoint's origin to the CSP connect-src, and rerun tools/csp_hashes.py. */
+(function(){
+  var FEEDBACK = { endpoint: '', format: 'json' };
+
+  var dlg=document.getElementById('fb-dlg'); if(!dlg || typeof dlg.showModal!=='function') return;
+  var form=document.getElementById('fb-form'), msg=document.getElementById('fb-msg'), count=document.getElementById('fb-count');
+  var want=document.getElementById('fb-want'), reply=document.getElementById('fb-reply'), email=document.getElementById('fb-email');
+  var msgErr=document.getElementById('fb-msg-err'), emailErr=document.getElementById('fb-email-err');
+  var send=document.getElementById('fb-send'), status=document.getElementById('fb-status'), ctxEl=document.getElementById('fb-ctx');
+  var done=document.getElementById('fb-done'), doneTxt=document.getElementById('fb-done-txt');
+  var opener=null, sending=false;
+
+  var NAMES={'view-home':'Home','view-dashboards':'Explore Dashboards','view-insights':'Data and Insights','view-search':'Search results',
+    'view-theme-employment':'Employment','view-theme-entrepreneurship':'Entrepreneurship','view-theme-infrastructure':'Enabling Infrastructure'};
+  function context(){
+    var v=document.querySelector('.view.active'), id=v?v.id:'', page=NAMES[id]||id.replace('view-','')||'Home', insight='';
+    var h=location.hash||'';
+    if(h.indexOf('#insight=')===0){
+      var k; try{ k=decodeURIComponent(h.slice(9)); }catch(e){ k=''; }
+      try{ if(k && window.INSIGHTS && INSIGHTS[k]) insight=String(INSIGHTS[k].title).replace(/<[^>]*>/g,''); }catch(e){}
+      if(!insight) insight=k;
+    }
+    var dev=document.documentElement.getAttribute('data-device')||'';
+    return { page:page, insight:insight, url:location.pathname+h, device:dev };
+  }
+
+  function open(btn){
+    opener=btn||document.activeElement;
+    var c=context();
+    ctxEl.textContent='Sent with: the page you’re on ('+c.page+(c.insight?' › '+c.insight:'')+'). We don\u2019t ask for your name, and nothing tracks you.';
+    form.hidden=false; done.hidden=true; status.textContent=''; status.className='fb-status';
+    dlg.showModal(); setTimeout(function(){ msg.focus(); },30);
+  }
+  function close(){ if(dlg.open) dlg.close(); }
+  dlg.addEventListener('close',function(){ if(opener && opener.focus) opener.focus(); });
+  dlg.addEventListener('click',function(e){ if(e.target===dlg) close(); if(e.target.closest('[data-fb-close]')) close(); });
+
+  document.addEventListener('click',function(e){ var b=e.target.closest('[data-fb-open]'); if(b){ e.preventDefault(); open(b); } });
+
+  msg.addEventListener('input',function(){ count.textContent=msg.value.length+' / 1500'; msgErr.hidden=true; msg.removeAttribute('aria-invalid'); });
+  want.addEventListener('change',function(){ reply.hidden=!want.checked; emailErr.hidden=true; if(want.checked) setTimeout(function(){ email.focus(); },20); else email.value=''; });
+  email.addEventListener('input',function(){ emailErr.hidden=true; email.removeAttribute('aria-invalid'); });
+
+  form.addEventListener('submit',function(e){
+    e.preventDefault(); if(sending) return;
+    var text=msg.value.trim(), ok=true;
+    if(text.length<3){ msgErr.hidden=false; msg.setAttribute('aria-invalid','true'); ok=false; }
+    var mail=email.value.trim();
+    if(want.checked && !/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(mail)){ emailErr.hidden=false; email.setAttribute('aria-invalid','true'); if(ok) email.focus(); ok=false; }
+    if(!ok){ if(!msgErr.hidden) msg.focus(); return; }
+
+    var c=context(), data={
+      site:'Udaiti DataHub', type:(form.querySelector('input[name=type]:checked')||{}).value||'Other',
+      message:text, page:c.page, insight:c.insight, page_url:c.url, device:c.device,
+      wants_reply:want.checked, email:want.checked?mail:'', submitted_at:new Date().toISOString()
+    };
+    if(form.website && form.website.value){ finish(false); return; }   /* bot filled the hidden field: drop quietly */
+
+    if(!FEEDBACK.endpoint){
+      status.className='fb-status bad';
+      status.textContent='Feedback isn’t switched on yet, so this wasn’t sent. Your text is still here.';
+      return;
+    }
+    sending=true; send.setAttribute('aria-busy','true'); send.textContent='Sending…'; status.textContent='';
+    var json=FEEDBACK.format==='text';
+    fetch(FEEDBACK.endpoint,{ method:'POST', credentials:'omit', referrerPolicy:'no-referrer',
+      headers: json?{'Content-Type':'text/plain;charset=utf-8'}:{'Content-Type':'application/json','Accept':'application/json'},
+      body: JSON.stringify(data) })
+    .then(function(r){ if(!r.ok && r.type!=='opaque') throw new Error('HTTP '+r.status); finish(true); })
+    .catch(function(){ status.className='fb-status bad'; status.textContent='Couldn’t send right now. Check your connection and try again.'; })
+    .then(function(){ sending=false; send.removeAttribute('aria-busy'); send.textContent='Send feedback'; });
+  });
+
+  function finish(real){
+    var replied=want.checked;
+    form.reset(); count.textContent='0 / 1500'; reply.hidden=true;
+    doneTxt.textContent= replied ? 'We’ll reply to the email you gave us.' : 'It goes straight to the DataHub team.';
+    form.hidden=true; done.hidden=false;
+    var b=done.querySelector('button'); if(b) b.focus();
+  }
+})();
+</script>
+
 <style id="phone-layout-v2">
 /* =====================================================================
    PHONE LAYOUT v2 (2026-11-26)
