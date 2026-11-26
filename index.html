@@ -1761,8 +1761,8 @@ main,.sitebar-inner,.hero-video__inner{ max-width:calc(var(--page-max) + 2*var(-
 </style>
 <style id="feedback-css">
 /* ===== Site feedback (header button + dialog) — 26 Nov 2026 ===== */
-.fb-open{ display:inline-flex; align-items:center; gap:7px; height:40px; padding:6px 16px; border-radius:999px; background:transparent; color:#fff; border:1px solid rgba(255,255,255,.45); font:inherit; font-size:14.5px; font-weight:600; cursor:pointer; white-space:nowrap; }
-.fb-open:hover{ border-color:var(--ui-yellow,#FFD400); color:var(--ui-yellow,#FFD400); }
+.fb-open{ display:inline-flex; align-items:center; gap:7px; height:40px; padding:6px 16px; border-radius:999px; background:#fff; color:var(--ui-black,#231F20); border:1px solid #fff; font:inherit; font-size:14.5px; font-weight:600; cursor:pointer; white-space:nowrap; }
+.fb-open:hover{ background:var(--ui-yellow,#FFD400); border-color:var(--ui-yellow,#FFD400); color:var(--ui-black,#231F20); }
 .fb-open:focus-visible{ outline:2px solid var(--ui-yellow,#FFD400); outline-offset:2px; }
 .fb-open svg{ width:18px; height:18px; flex:none; fill:none; stroke:currentColor; stroke-width:1.8; stroke-linecap:round; stroke-linejoin:round; }
 dialog.fb-dlg{ width:min(520px, calc(100vw - 32px)); max-height:min(88vh, 760px); padding:0; border:0; border-radius:18px; background:var(--surface,#fff); color:var(--ink,#231F20); box-shadow:0 24px 64px rgba(0,0,0,.28); overflow:auto; }
@@ -5143,8 +5143,7 @@ wrap.addEventListener('focusout',hide);
     <fieldset class="fb-types">
       <legend>What's it about?</legend>
       <label><input type="radio" name="type" value="Suggest data or a topic" checked><span>Suggest data or a topic</span></label>
-      <label><input type="radio" name="type" value="Report an error in the data"><span>Report an error in the data</span></label>
-      <label><input type="radio" name="type" value="Something isn't working"><span>Something isn't working</span></label>
+      <label><input type="radio" name="type" value="What we can improve"><span>What we can improve</span></label>
       <label><input type="radio" name="type" value="Other"><span>Other</span></label>
     </fieldset>
 
