@@ -1706,6 +1706,518 @@ main,.sitebar-inner,.hero-video__inner{ max-width:calc(var(--page-max) + 2*var(-
 @media (min-width:1280px){ .insight-inset.has-title > .inset-title{ font-size:14px; } }
 </style>
 <style id="fw-retired">.fw-card[data-retired]{ display:none !important; }</style>
+<style id="search-css">
+.nav-search{ position:relative; }
+.nav-search .ns-btn{ display:inline-flex; align-items:center; justify-content:center; border:0; background:transparent; padding:0; margin:0; cursor:pointer; color:var(--ink-faint); width:22px; height:22px; border-radius:6px; flex:none; }
+.nav-search .ns-btn:hover{ color:var(--indigo-900); background:var(--surface-sunken); }
+.nav-search .ns-btn .icon{ width:16px; height:16px; color:inherit; }
+.nav-search input::-webkit-search-cancel-button{ cursor:pointer; }
+#view-search .db-header h1{ word-break:break-word; }
+#sr-form{ margin:18px 0 0; max-width:760px; }
+#sr-form .btn{ flex:none; }
+.sr-filters{ display:flex; gap:8px; flex-wrap:wrap; margin-top:16px; }
+.sr-chip{ font:inherit; font-size:15px; font-weight:600; padding:7px 14px; border-radius:999px; border:1.5px solid var(--border); background:var(--surface); color:var(--ink); cursor:pointer; }
+.sr-chip span{ font-weight:500; color:var(--ink-faint); margin-left:2px; }
+.sr-chip.active{ background:var(--ink); border-color:var(--ink); color:#fff; }
+.sr-chip.active span{ color:var(--turmeric-500); }
+#sr-results{ max-width:920px; padding-bottom:48px; }
+.sr-group{ font-size:14px; font-weight:700; letter-spacing:.09em; text-transform:uppercase; color:var(--ink-faint); margin:28px 0 10px; font-family:inherit; }
+.sr-item{ position:relative; border:1px solid var(--border-soft); border-radius:16px; background:var(--surface); margin-bottom:12px; transition:border-color .15s, box-shadow .15s; }
+.sr-item:hover{ border-color:var(--indigo-500); box-shadow:var(--shadow-md); }
+.sr-open{ display:flex; gap:18px; width:100%; text-align:left; border:0; background:transparent; padding:16px; cursor:pointer; font:inherit; color:inherit; border-radius:16px; }
+.sr-thumb{ flex:0 0 180px; height:120px; border-radius:10px; background:var(--surface-sunken); padding:8px; display:flex; align-items:center; justify-content:center; overflow:hidden; }
+.sr-thumb svg{ width:100%; height:100%; }
+.sr-thumb-ico{ flex-basis:64px; height:64px; padding:0; }
+.sr-thumb-ico .icon{ width:28px; height:28px; color:var(--chart-line); }
+.sr-body{ display:flex; flex-direction:column; gap:5px; min-width:0; padding-right:4px; }
+.sr-kicker{ font-size:14px; color:var(--ink-faint); }
+.sr-kicker b{ color:var(--chart-line); font-weight:700; text-transform:uppercase; letter-spacing:.06em; font-size:13px; }
+.sr-title{ font-size:17px; font-weight:600; line-height:1.35; color:var(--ink); }
+.sr-snip{ font-size:16px; color:var(--ink-dim); line-height:1.55; }
+.sr-more{ font-size:15px; font-weight:600; color:var(--chart-line); margin-top:2px; }
+.sr-ext{ position:absolute; right:16px; bottom:14px; font-size:14.5px; font-weight:600; color:var(--link); display:inline-flex; align-items:center; gap:4px; text-decoration:none; }
+.sr-ext:hover{ text-decoration:underline; }
+.sr-ext .icon{ width:13px; height:13px; }
+.sr-item mark{ background:var(--accent-wash); color:inherit; border-radius:2px; padding:0 1px; }
+.sr-empty{ padding:36px 4px; }
+.sr-empty h3{ font-size:20px; margin-bottom:6px; }
+.sr-empty p{ color:var(--ink-dim); margin:0 0 14px; }
+.sr-suggest{ display:flex; flex-wrap:wrap; gap:8px; }
+.sr-suggest .pill{ cursor:pointer; font:inherit; }
+#view-search .db-header::after{ display:none; content:none; }
+#view-search .db-header{ padding-bottom:20px; }
+.sr-fix{ color:var(--ink-dim); }
+.sr-fix b{ color:var(--ink); }
+.dh-explore{ display:block; margin-top:6px; padding:12px 16px; border-radius:10px; background:var(--surface-sunken); font-size:16px; line-height:1.6; }
+.dh-explore a{ color:var(--link); font-weight:600; }
+.ds-flash{ animation:dsFlash 1.6s ease; }
+@keyframes dsFlash{ 0%,60%{ box-shadow:0 0 0 3px var(--turmeric-500); } 100%{ box-shadow:none; } }
+@media (max-width:640px){
+  .sr-open{ flex-direction:column; gap:12px; padding:14px; }
+  .sr-thumb{ flex-basis:auto; width:100%; height:150px; }
+  .sr-thumb-ico{ width:52px; height:52px; }
+  .sr-ext{ position:static; padding:0 14px 14px; }
+}
+</style>
+<style id="feedback-css">
+/* ===== Site feedback (header button + dialog) — 26 Nov 2026 ===== */
+.fb-open{ display:inline-flex; align-items:center; gap:7px; height:40px; padding:6px 16px; border-radius:999px; background:transparent; color:#fff; border:1px solid rgba(255,255,255,.45); font:inherit; font-size:14.5px; font-weight:600; cursor:pointer; white-space:nowrap; }
+.fb-open:hover{ border-color:var(--ui-yellow,#FFD400); color:var(--ui-yellow,#FFD400); }
+.fb-open:focus-visible{ outline:2px solid var(--ui-yellow,#FFD400); outline-offset:2px; }
+.fb-open svg{ width:18px; height:18px; flex:none; fill:none; stroke:currentColor; stroke-width:1.8; stroke-linecap:round; stroke-linejoin:round; }
+dialog.fb-dlg{ width:min(520px, calc(100vw - 32px)); max-height:min(88vh, 760px); padding:0; border:0; border-radius:18px; background:var(--surface,#fff); color:var(--ink,#231F20); box-shadow:0 24px 64px rgba(0,0,0,.28); overflow:auto; }
+dialog.fb-dlg::backdrop{ background:rgba(20,18,19,.55); }
+.fb-dlg form{ padding:24px 26px 22px; display:flex; flex-direction:column; gap:16px; }
+.fb-head{ display:flex; align-items:flex-start; justify-content:space-between; gap:12px; }
+.fb-head h2{ margin:0; font-size:22px; line-height:1.25; }
+.fb-head h2:focus{ outline:none; }
+.fb-head p{ margin:6px 0 0; font-size:14.5px; line-height:1.5; color:var(--ink-dim,#555); }
+.fb-x{ flex:none; width:40px; height:40px; border-radius:50%; border:0; background:var(--surface-sunken,#f2f3f3); color:inherit; cursor:pointer; display:flex; align-items:center; justify-content:center; }
+.fb-x svg{ width:18px; height:18px; stroke:currentColor; stroke-width:2; fill:none; stroke-linecap:round; }
+.fb-lab{ display:block; font-size:14px; font-weight:600; margin:0 0 8px; }
+.fb-types{ display:flex; flex-wrap:wrap; gap:8px; border:0; padding:0; margin:0; }
+.fb-types legend{ font-size:14px; font-weight:600; margin:0 0 8px; padding:0; }
+.fb-types label{ position:relative; }
+.fb-types input{ position:absolute; opacity:0; inset:0; margin:0; cursor:pointer; }
+.fb-types span{ display:inline-block; padding:8px 14px; border-radius:999px; border:1px solid var(--line,#d9dcdc); font-size:14px; line-height:1.2; }
+.fb-types input:checked + span{ background:var(--brand-teal-ink,#1d6b74); border-color:var(--brand-teal-ink,#1d6b74); color:#fff; }
+.fb-types input:focus-visible + span{ outline:2px solid var(--ui-yellow,#FFD400); outline-offset:2px; }
+.fb-dlg textarea,.fb-dlg input[type=email]{ width:100%; box-sizing:border-box; font:inherit; font-size:16px; line-height:1.5; color:inherit; background:var(--bg,#fff); border:1px solid var(--line,#cfd3d3); border-radius:10px; padding:10px 12px; }
+.fb-dlg textarea{ min-height:120px; resize:vertical; }
+.fb-dlg textarea:focus,.fb-dlg input[type=email]:focus{ outline:2px solid var(--brand-teal,#009FA2); outline-offset:0; border-color:transparent; }
+.fb-meta{ display:flex; justify-content:space-between; gap:12px; font-size:12.5px; color:var(--ink-faint,#6b6f70); margin-top:6px; }
+.fb-err{ color:#b42318; font-size:13.5px; margin:6px 0 0; }
+.fb-check{ display:flex; gap:10px; align-items:flex-start; font-size:14.5px; line-height:1.45; cursor:pointer; }
+.fb-check input{ width:18px; height:18px; margin:2px 0 0; accent-color:var(--brand-teal-ink,#1d6b74); flex:none; }
+.fb-reply[hidden],.fb-dlg form[hidden]{ display:none; }
+.fb-note{ font-size:12.5px; color:var(--ink-faint,#6b6f70); margin:6px 0 0; line-height:1.45; }
+.fb-ctx{ font-size:12.5px; color:var(--ink-faint,#6b6f70); background:var(--surface-sunken,#f4f6f6); border-radius:10px; padding:8px 12px; line-height:1.45; }
+.fb-hp{ position:absolute !important; left:-9999px !important; width:1px; height:1px; overflow:hidden; }
+.fb-actions{ display:flex; align-items:center; gap:12px; flex-wrap:wrap; }
+.fb-send{ height:44px; padding:0 22px; border-radius:999px; border:0; background:var(--ui-black,#231F20); color:var(--ui-yellow,#FFD400); font:inherit; font-size:15px; font-weight:700; cursor:pointer; }
+.fb-send[aria-busy="true"]{ opacity:.6; cursor:progress; }
+.fb-status{ font-size:14px; margin:0; }
+.fb-status.bad{ color:#b42318; }
+.fb-done{ padding:34px 26px 30px; text-align:center; }
+.fb-done[hidden]{ display:none; }
+.fb-done .tick{ width:52px; height:52px; border-radius:50%; background:var(--ui-yellow,#FFD400); color:var(--ui-black,#231F20); display:inline-flex; align-items:center; justify-content:center; margin-bottom:12px; }
+.fb-done .tick svg{ width:26px; height:26px; stroke:currentColor; stroke-width:2.4; fill:none; stroke-linecap:round; stroke-linejoin:round; }
+.fb-done h2{ margin:0 0 6px; font-size:21px; }
+.fb-done p{ margin:0 0 18px; font-size:15px; color:var(--ink-dim,#555); }
+/* phones: icon-only header button, form as a bottom sheet */
+html[data-device="phone"] .fb-open{ width:40px; padding:0; justify-content:center; }
+html[data-device="phone"] .fb-open .fb-open-txt{ position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap; }
+html[data-device="phone"] dialog.fb-dlg{ width:100vw; max-width:100vw; max-height:92dvh; margin:auto 0 0; border-radius:20px 20px 0 0; }
+html[data-device="phone"] .fb-dlg form{ padding:20px 18px calc(18px + env(safe-area-inset-bottom)); }
+@media (max-width:720px){
+  .fb-open{ width:40px; padding:0; justify-content:center; }
+  .fb-open .fb-open-txt{ position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap; }
+  dialog.fb-dlg{ width:100vw; max-width:100vw; max-height:92dvh; margin:auto 0 0; border-radius:20px 20px 0 0; }
+  .fb-dlg form{ padding:20px 18px calc(18px + env(safe-area-inset-bottom)); }
+}
+/* narrower laptops and tablets: icon-only button (tooltip + screen-reader label) and a slightly narrower search, so the nav links keep their room */
+@media (max-width:1599px){
+  .fb-open{ width:40px; padding:0; justify-content:center; }
+  .fb-open .fb-open-txt{ position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap; }
+  .sitebar .nav-actions{ gap:8px !important; }
+}
+@media (min-width:721px) and (max-width:1599px){ .sitebar .nav-search{ min-width:0 !important; width:156px !important; } }
+@media (min-width:721px) and (max-width:1339px){ .sitebar .nav-search{ width:132px !important; } }
+@media (min-width:721px) and (max-width:1180px){ .sitebar .nav-search{ width:110px !important; } }
+/* phones: make room for the icon beside Subscribe */
+html[data-device="phone"] .fb-open{ width:36px; height:36px; }
+html[data-device="phone"] .nav-actions{ gap:6px !important; }
+html[data-device="phone"] #sub-menu > .btn{ padding:0 12px !important; height:36px; min-height:36px; font-size:13.5px !important; }
+@media (max-width:720px){
+  .fb-open{ width:36px; height:36px; }
+  .nav-actions{ gap:6px !important; }
+  #sub-menu > .btn{ padding:0 12px !important; height:36px; min-height:36px; font-size:13.5px !important; }
+}
+@media (max-width:400px){ .sitebar .brand-logo{ height:24px !important; } }
+@media (max-width:345px){ .sitebar .brand-div,.sitebar .brand-text{ display:none !important; } }
+</style>
+<style id="phone-layout-v2">
+/* =====================================================================
+   PHONE LAYOUT v2 (2026-11-26)
+   Applies only when <html data-device="phone"> is set by the device
+   detection script in <head>. PCs, laptops and tablets never get these
+   rules, so their layout is unchanged.
+   ===================================================================== */
+
+/* ---------- 1. Home: remove hero + subscription form ---------- */
+html[data-device="phone"] #view-home .hero-video{ display:none !important; }
+html[data-device="phone"] #view-home .home-subscribe-card{ display:none !important; }
+html[data-device="phone"] #featured-dashboards{ margin-top:22px !important; }
+html[data-device="phone"] .dash-with-subscribe{ display:block !important; }
+
+/* ---------- 2. Quick links: 3 equal tiles, no sideways scroll ---------- */
+html[data-device="phone"] .quick-links{ padding:12px 16px 14px; flex-direction:column; align-items:stretch; gap:8px; overflow:visible; }
+html[data-device="phone"] .quick-links .ql-label{ display:none; }
+html[data-device="phone"] .quick-links .pill-row{ display:grid !important; grid-template-columns:repeat(3,1fr); gap:8px; overflow:visible !important; flex-wrap:nowrap; padding:0; margin:0; }
+html[data-device="phone"] .quick-links .pill{ flex-direction:column; justify-content:center; text-align:center; gap:6px; min-height:72px; padding:10px 6px; border-radius:14px; font-size:13.5px; line-height:1.2; white-space:normal; width:auto; }
+html[data-device="phone"] .quick-links .pill .icon{ width:20px; height:20px; }
+
+/* ---------- 3. Home carousels become vertical stacks ---------- */
+html[data-device="phone"] #view-home .carousel{ overflow:visible; padding:0; margin:0; }
+html[data-device="phone"] #view-home .carousel-arrow,
+html[data-device="phone"] #view-home .carousel-dots{ display:none !important; }
+html[data-device="phone"] #dash-track,
+html[data-device="phone"] #insights-track{ display:flex !important; flex-direction:column; flex-wrap:nowrap; gap:12px; overflow:visible !important; scroll-snap-type:none !important; padding:0 !important; margin:0 !important; transform:none !important; }
+html[data-device="phone"] #dash-track > *,
+html[data-device="phone"] #insights-track > *{ width:auto !important; min-width:0 !important; max-width:none !important; flex:none !important; scroll-snap-align:none; }
+html[data-device="phone"] #view-home .section-head{ flex-wrap:wrap; gap:10px; }
+
+/* ---------- 4. Home: Featured Dashboards as compact summary cards ---------- */
+html[data-device="phone"] #dash-track .dash-card{ padding:18px 18px 16px; border-radius:18px; border-left:5px solid var(--brand-teal,#009FA2); }
+html[data-device="phone"] #dash-track .dash-card h3{ font-size:19px; line-height:1.3; margin:0 0 4px; }
+html[data-device="phone"] #dash-track .dash-sub{ font-size:14px; line-height:1.45; margin:0 0 12px; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; }
+html[data-device="phone"] #dash-track .dash-inset,
+html[data-device="phone"] #dash-track .dash-tags,
+html[data-device="phone"] #dash-track .dh-trust{ display:none !important; }
+html[data-device="phone"] #dash-track .dash-body{ display:block; }
+html[data-device="phone"] #dash-track .dash-meta{ padding:0; display:flex; flex-direction:column; gap:12px; }
+html[data-device="phone"] #dash-track .dash-metrics{ display:grid; grid-template-columns:1fr 1fr; gap:10px; margin:0; padding:0; border:0; }
+html[data-device="phone"] #dash-track .dash-metrics > div{ background:var(--surface-sunken,#f4f6f6); border-radius:12px; padding:10px 12px; border:0 !important; margin:0 !important; }
+html[data-device="phone"] #dash-track .dash-metrics b{ font-size:24px; line-height:1.1; display:block; }
+html[data-device="phone"] #dash-track .dash-metrics span{ font-size:13px; line-height:1.3; display:block; margin-top:3px; }
+html[data-device="phone"] #dash-track .dash-caption{ font-size:15px; line-height:1.55; margin:0; display:-webkit-box; -webkit-line-clamp:3; -webkit-box-orient:vertical; overflow:hidden; }
+html[data-device="phone"] #dash-track .btn.primary{ align-self:stretch; justify-content:center; min-height:46px; margin:0; }
+
+/* ---------- 5. Insight cards (home + Data and Insights): one lead card, then compact rows ---------- */
+/* compact row: thumbnail left, source + headline right */
+html[data-device="phone"] #insights-track .insight-card:not(:first-child),
+html[data-device="phone"] .theme-listing-grid .insight-card.listing:not(:first-child){
+  display:grid !important; grid-template-columns:96px 1fr; gap:14px; align-items:start;
+  padding:14px 0 !important; min-height:0; border-radius:0; background:none; box-shadow:none; border:0; border-top:1px solid var(--line,#e6e8e8);
+}
+html[data-device="phone"] #insights-track .insight-card:not(:first-child){ padding:14px !important; border:1px solid var(--line,#e6e8e8); border-radius:14px; background:var(--surface,#fff); }
+html[data-device="phone"] #insights-track .insight-card:not(:first-child) .insight-inset,
+html[data-device="phone"] .theme-listing-grid .insight-card.listing:not(:first-child) .insight-inset{
+  width:96px !important; height:96px !important; min-height:0 !important; aspect-ratio:auto !important; flex:none !important; padding:6px !important; border-radius:10px !important; overflow:hidden;
+}
+html[data-device="phone"] #insights-track .insight-card:not(:first-child) .insight-inset.human-media,
+html[data-device="phone"] .theme-listing-grid .insight-card.listing:not(:first-child) .insight-inset.human-media{ padding:0 !important; }
+html[data-device="phone"] #insights-track .insight-card:not(:first-child) .insight-inset svg,
+html[data-device="phone"] .theme-listing-grid .insight-card.listing:not(:first-child) .insight-inset svg{ width:100% !important; height:100% !important; max-width:none; }
+html[data-device="phone"] #insights-track .insight-card:not(:first-child) .insight-text,
+html[data-device="phone"] .theme-listing-grid .insight-card.listing:not(:first-child) .insight-text{ padding:0 !important; min-width:0; }
+html[data-device="phone"] #insights-track .insight-card:not(:first-child) .insight-text h3,
+html[data-device="phone"] .theme-listing-grid .insight-card.listing:not(:first-child) .insight-text h3{ font-size:16px !important; line-height:1.35; margin:4px 0 0; }
+html[data-device="phone"] #insights-track .insight-card:not(:first-child) .insight-text p,
+html[data-device="phone"] #insights-track .insight-card:not(:first-child) .insight-more,
+html[data-device="phone"] .theme-listing-grid .insight-card.listing:not(:first-child) .insight-text p,
+html[data-device="phone"] .theme-listing-grid .insight-card.listing:not(:first-child) .insight-more{ display:none !important; }
+html[data-device="phone"] .insight-date{ font-size:12.5px !important; }
+/* lead card: full-width visual on top */
+html[data-device="phone"] #insights-track .insight-card:first-child{ flex-direction:column; }
+html[data-device="phone"] #insights-track .insight-card:first-child .insight-inset{ width:100%; height:auto !important; aspect-ratio:5/4; }
+html[data-device="phone"] .insight-card .insight-text p{ display:-webkit-box; -webkit-line-clamp:3; -webkit-box-orient:vertical; overflow:hidden; }
+
+/* ---------- 6. Research & Highlights: single column, shorter art ---------- */
+html[data-device="phone"] #view-home .grid-4{ display:grid !important; grid-template-columns:1fr !important; gap:14px; overflow:visible !important; }
+html[data-device="phone"] #view-home .grid-4 > *{ width:auto !important; min-width:0 !important; flex:none !important; }
+html[data-device="phone"] #view-home .grid-4 .card-media{ height:150px !important; }
+html[data-device="phone"] #view-home .promo-card .promo-btn{ margin-top:16px; }
+html[data-device="phone"] #view-home .promo-card{ min-height:0 !important; }
+
+/* ---------- 7. Page headers: drop decorative illustration ---------- */
+html[data-device="phone"] .db-header::after,
+html[data-device="phone"] .db-header::before{ display:none !important; content:none !important; }
+html[data-device="phone"] .db-header{ padding-bottom:8px !important; min-height:0 !important; }
+html[data-device="phone"] .db-header h1{ font-size:30px; }
+
+/* ---------- 8. Dashboards page: one clear reading order per dashboard ---------- */
+/* order: title -> key numbers + summary -> chart -> key findings -> open dashboard + source */
+html[data-device="phone"] .db-tabs{ display:grid !important; grid-template-columns:1fr 1fr; overflow:visible !important; }
+html[data-device="phone"] .db-tab{ justify-content:center; min-height:46px; }
+html[data-device="phone"] .dbcard{ display:flex; flex-direction:column; padding:18px 16px !important; border-radius:18px; }
+html[data-device="phone"] .dbcard > .dbcard-head{ order:0; }
+html[data-device="phone"] .dbcard > .dbcard-body{ order:1; }
+html[data-device="phone"] .dbcard > .db-headbar{ order:2; }
+html[data-device="phone"] .dbcard-head{ padding:0 !important; gap:10px; align-items:flex-start; }
+html[data-device="phone"] .dbcard-head h3{ font-size:21px !important; line-height:1.25; }
+html[data-device="phone"] .dbcard-head-main p{ font-size:14px !important; line-height:1.45; }
+html[data-device="phone"] .dbcard-preview{ display:none !important; }
+html[data-device="phone"] .dbcard-head-right{ flex:none; align-self:flex-start; }
+html[data-device="phone"] .dbcard-body{ display:flex !important; flex-direction:column; gap:16px; padding:16px 0 0 !important; }
+html[data-device="phone"] .dbcard-body > .db-col{ display:contents !important; }
+html[data-device="phone"] .dbcard-body .db-info{ order:1; padding:0 !important; border:0 !important; background:none !important; box-shadow:none !important; margin:0 !important; }
+html[data-device="phone"] .dbcard-body > .dbcard-main{ order:2; padding:0 !important; border:0 !important; background:none !important; box-shadow:none !important; margin:0 !important; }
+html[data-device="phone"] .dbcard-body .dbcard-side{ order:3; }
+html[data-device="phone"] .dbcard-body > .dh-about{ order:4; }
+html[data-device="phone"] .dbcard .dash-tags{ display:none !important; }
+html[data-device="phone"] .dbcard .dash-metrics{ display:grid !important; grid-template-columns:1fr 1fr; gap:10px; margin:0 0 12px; border:0; padding:0; }
+html[data-device="phone"] .dbcard .dash-metrics > div{ background:var(--surface-sunken,#f4f6f6); border-radius:12px; padding:12px; border:0 !important; margin:0 !important; }
+html[data-device="phone"] .dbcard .dash-metrics b{ font-size:26px !important; line-height:1.1; display:block; }
+html[data-device="phone"] .dbcard .dash-metrics span{ font-size:13.5px !important; line-height:1.3; display:block; margin-top:4px; }
+html[data-device="phone"] .dbcard .dash-caption{ font-size:15.5px !important; line-height:1.6; margin:0; }
+html[data-device="phone"] .dbcard .dash-inset{ padding:12px !important; border-radius:14px; }
+
+/* key findings: readable text list instead of tiny chart thumbnails */
+html[data-device="phone"] .dbcard-side{ display:flex !important; flex-direction:column; gap:0; padding:0 !important; border:0 !important; background:none !important; box-shadow:none !important; counter-reset:kf; }
+html[data-device="phone"] .dbcard-side::before{ content:"Key findings"; display:block; font-size:12.5px; font-weight:700; letter-spacing:.08em; text-transform:uppercase; color:var(--accent-ink,#1d6b74); margin:0 0 4px; }
+html[data-device="phone"] .dbcard-side .mini-insight{ display:grid !important; grid-template-columns:28px 1fr; gap:10px; padding:12px 0 !important; margin:0 !important; border:0 !important; border-top:1px solid var(--line,#e6e8e8) !important; background:none !important; box-shadow:none !important; counter-increment:kf; }
+html[data-device="phone"] .dbcard-side .mini-insight::before{ content:counter(kf); width:26px; height:26px; border-radius:50%; background:var(--turmeric-500,#FFD500); color:#231F20; font-weight:700; font-size:13.5px; display:flex; align-items:center; justify-content:center; margin-top:1px; }
+html[data-device="phone"] .dbcard-side .mini-insight-chart{ display:none !important; }
+html[data-device="phone"] .dbcard-side .mini-insight h4{ font-size:15.5px !important; letter-spacing:0 !important; text-transform:none !important; margin:0 0 3px; line-height:1.3; }
+html[data-device="phone"] .dbcard-side .mini-insight p{ font-size:14.5px !important; line-height:1.55; margin:0; }
+
+/* open dashboard + source sit at the end */
+html[data-device="phone"] .db-headbar{ display:flex !important; flex-direction:column-reverse; gap:12px; margin:16px 0 0 !important; padding:16px 0 0 !important; border:0 !important; border-top:1px solid var(--line,#e6e8e8) !important; background:none !important; box-shadow:none !important; }
+html[data-device="phone"] .db-headbar .btn.primary{ width:100%; justify-content:center; min-height:48px; margin:0; }
+html[data-device="phone"] .db-headbar .dh-src,
+html[data-device="phone"] .db-headbar .dh-sub{ font-size:13px !important; line-height:1.5; }
+
+/* ---------- 9. General phone hygiene ---------- */
+/* scroll fix: "hidden" on both html and body turns body into a second scroller on Chrome/Android,
+   which makes the page stick at the bottom. clip stops sideways overflow without creating a scroller. */
+html[data-device="phone"]{ overflow-x:clip !important; overflow-y:visible !important; }
+html[data-device="phone"] body{ overflow-x:clip !important; overflow-y:visible !important; }
+html[data-device="phone"] a, html[data-device="phone"] button{ touch-action:manipulation; }
+
+/* NSE sector chart: long sector names sit left of the viewBox; give them room on phones */
+html[data-device="phone"] #db-nse-svg{ overflow:visible; margin-left:34px; width:calc(100% - 34px) !important; }
+html[data-device="phone"] .db-headbar{ border-radius:0 !important; }
+html[data-device="phone"] .db-headbar > *{ background:none !important; border:0 !important; box-shadow:none !important; padding:0 !important; }
+
+html[data-device="phone"] .insight-card:not(:first-child) .insight-text h3{ display:block !important; -webkit-line-clamp:unset !important; overflow:visible !important; max-height:none !important; }
+
+/* phones held sideways (wider than 720px): keep the desktop top bar but make it fit */
+@media (min-width:721px){
+  html[data-device="phone"] .sitebar .nav-search{ display:none !important; }
+  html[data-device="phone"] .sitebar .brand-tag{ display:none !important; }
+  html[data-device="phone"] .sitebar .nav-link{ font-size:14px !important; padding:8px 6px !important; }
+  html[data-device="phone"] .sitebar .nav-link .icon{ display:none !important; }
+  html[data-device="phone"] .sitebar .sitenav{ gap:12px !important; }
+}
+
+/* long unbroken text (citation URLs) must wrap instead of widening the card */
+html[data-device="phone"] .dbcard,
+html[data-device="phone"] .dbcard *{ min-width:0; }
+html[data-device="phone"] .dbcard{ max-width:100%; overflow:hidden; }
+html[data-device="phone"] .dh-cite,
+html[data-device="phone"] .dh-citepanel,
+html[data-device="phone"] .dh-about,
+html[data-device="phone"] .dh-src,
+html[data-device="phone"] .dh-sub{ overflow-wrap:anywhere; word-break:break-word; max-width:100%; }
+html[data-device="phone"] .dh-trust .dh-tbar{ flex-wrap:wrap; }
+
+/* compact insight rows: keep a small chart preview (white panel, slightly larger thumbnail) */
+html[data-device="phone"] #insights-track .insight-card:not(:first-child),
+html[data-device="phone"] .theme-listing-grid .insight-card.listing:not(:first-child){ grid-template-columns:112px 1fr; }
+html[data-device="phone"] #insights-track .insight-card:not(:first-child) .insight-inset,
+html[data-device="phone"] .theme-listing-grid .insight-card.listing:not(:first-child) .insight-inset{ width:112px !important; height:112px !important; }
+html[data-device="phone"] #insights-track .insight-card:not(:first-child) .insight-inset:not(.human-media),
+html[data-device="phone"] .theme-listing-grid .insight-card.listing:not(:first-child) .insight-inset:not(.human-media){ background:#fff !important; border:1px solid var(--line,#e6e8e8); padding:5px !important; display:flex !important; align-items:center; justify-content:center; }
+
+/* compact 112px thumbnails are too small for a title; the headline beside them describes the chart */
+html[data-device="phone"] #insights-track .insight-card:not(:first-child) .inset-title,
+html[data-device="phone"] .theme-listing-grid .insight-card.listing:not(:first-child) .inset-title{ display:none !important; }
+
+/* Data and Insights: featured work cards sit right after their own section (no scroll-driven swapping) */
+html[data-device="phone"] #view-insights .insights-layout{ display:flex !important; flex-direction:column; gap:0; }
+html[data-device="phone"] #view-insights .theme-accordion,
+html[data-device="phone"] #view-insights .featured-work-panel{ display:contents !important; }
+html[data-device="phone"] #view-insights .featured-work-panel > h2{ display:none !important; }
+html[data-device="phone"] #view-insights .theme-block[data-theme-key="employment"]{ order:1; }
+html[data-device="phone"] #view-insights .fw-card[data-theme-card="employment"]{ order:2; }
+html[data-device="phone"] #view-insights .theme-block[data-theme-key="entrepreneurship"]{ order:3; }
+html[data-device="phone"] #view-insights .fw-card[data-theme-card="entrepreneurship"]{ order:4; }
+html[data-device="phone"] #view-insights .theme-block[data-theme-key="infrastructure"]{ order:5; }
+html[data-device="phone"] #view-insights .fw-card:not([data-retired]){ display:flex !important; margin:16px 0 28px !important; }
+html[data-device="phone"] #view-insights .fw-card[data-retired]{ display:none !important; }
+html[data-device="phone"] #view-insights .theme-block{ margin:0 !important; }
+html[data-device="phone"] #db-nse-inset{ overflow:visible !important; max-height:none !important; }
+
+/* ---- width-based copy: works even if the script fails or reports the wrong size ---- */
+@media (max-width:720px){
+
+/* =====================================================================
+   PHONE LAYOUT v2 (2026-11-26)
+   Applies only when <html data-device="phone"> is set by the device
+   detection script in <head>. PCs, laptops and tablets never get these
+   rules, so their layout is unchanged.
+   ===================================================================== */
+
+/* ---------- 1. Home: remove hero + subscription form ---------- */
+html #view-home .hero-video{ display:none !important; }
+html #view-home .home-subscribe-card{ display:none !important; }
+html #featured-dashboards{ margin-top:22px !important; }
+html .dash-with-subscribe{ display:block !important; }
+
+/* ---------- 2. Quick links: 3 equal tiles, no sideways scroll ---------- */
+html .quick-links{ padding:12px 16px 14px; flex-direction:column; align-items:stretch; gap:8px; overflow:visible; }
+html .quick-links .ql-label{ display:none; }
+html .quick-links .pill-row{ display:grid !important; grid-template-columns:repeat(3,1fr); gap:8px; overflow:visible !important; flex-wrap:nowrap; padding:0; margin:0; }
+html .quick-links .pill{ flex-direction:column; justify-content:center; text-align:center; gap:6px; min-height:72px; padding:10px 6px; border-radius:14px; font-size:13.5px; line-height:1.2; white-space:normal; width:auto; }
+html .quick-links .pill .icon{ width:20px; height:20px; }
+
+/* ---------- 3. Home carousels become vertical stacks ---------- */
+html #view-home .carousel{ overflow:visible; padding:0; margin:0; }
+html #view-home .carousel-arrow,
+html #view-home .carousel-dots{ display:none !important; }
+html #dash-track,
+html #insights-track{ display:flex !important; flex-direction:column; flex-wrap:nowrap; gap:12px; overflow:visible !important; scroll-snap-type:none !important; padding:0 !important; margin:0 !important; transform:none !important; }
+html #dash-track > *,
+html #insights-track > *{ width:auto !important; min-width:0 !important; max-width:none !important; flex:none !important; scroll-snap-align:none; }
+html #view-home .section-head{ flex-wrap:wrap; gap:10px; }
+
+/* ---------- 4. Home: Featured Dashboards as compact summary cards ---------- */
+html #dash-track .dash-card{ padding:18px 18px 16px; border-radius:18px; border-left:5px solid var(--brand-teal,#009FA2); }
+html #dash-track .dash-card h3{ font-size:19px; line-height:1.3; margin:0 0 4px; }
+html #dash-track .dash-sub{ font-size:14px; line-height:1.45; margin:0 0 12px; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; }
+html #dash-track .dash-inset,
+html #dash-track .dash-tags,
+html #dash-track .dh-trust{ display:none !important; }
+html #dash-track .dash-body{ display:block; }
+html #dash-track .dash-meta{ padding:0; display:flex; flex-direction:column; gap:12px; }
+html #dash-track .dash-metrics{ display:grid; grid-template-columns:1fr 1fr; gap:10px; margin:0; padding:0; border:0; }
+html #dash-track .dash-metrics > div{ background:var(--surface-sunken,#f4f6f6); border-radius:12px; padding:10px 12px; border:0 !important; margin:0 !important; }
+html #dash-track .dash-metrics b{ font-size:24px; line-height:1.1; display:block; }
+html #dash-track .dash-metrics span{ font-size:13px; line-height:1.3; display:block; margin-top:3px; }
+html #dash-track .dash-caption{ font-size:15px; line-height:1.55; margin:0; display:-webkit-box; -webkit-line-clamp:3; -webkit-box-orient:vertical; overflow:hidden; }
+html #dash-track .btn.primary{ align-self:stretch; justify-content:center; min-height:46px; margin:0; }
+
+/* ---------- 5. Insight cards (home + Data and Insights): one lead card, then compact rows ---------- */
+/* compact row: thumbnail left, source + headline right */
+html #insights-track .insight-card:not(:first-child),
+html .theme-listing-grid .insight-card.listing:not(:first-child){
+  display:grid !important; grid-template-columns:96px 1fr; gap:14px; align-items:start;
+  padding:14px 0 !important; min-height:0; border-radius:0; background:none; box-shadow:none; border:0; border-top:1px solid var(--line,#e6e8e8);
+}
+html #insights-track .insight-card:not(:first-child){ padding:14px !important; border:1px solid var(--line,#e6e8e8); border-radius:14px; background:var(--surface,#fff); }
+html #insights-track .insight-card:not(:first-child) .insight-inset,
+html .theme-listing-grid .insight-card.listing:not(:first-child) .insight-inset{
+  width:96px !important; height:96px !important; min-height:0 !important; aspect-ratio:auto !important; flex:none !important; padding:6px !important; border-radius:10px !important; overflow:hidden;
+}
+html #insights-track .insight-card:not(:first-child) .insight-inset.human-media,
+html .theme-listing-grid .insight-card.listing:not(:first-child) .insight-inset.human-media{ padding:0 !important; }
+html #insights-track .insight-card:not(:first-child) .insight-inset svg,
+html .theme-listing-grid .insight-card.listing:not(:first-child) .insight-inset svg{ width:100% !important; height:100% !important; max-width:none; }
+html #insights-track .insight-card:not(:first-child) .insight-text,
+html .theme-listing-grid .insight-card.listing:not(:first-child) .insight-text{ padding:0 !important; min-width:0; }
+html #insights-track .insight-card:not(:first-child) .insight-text h3,
+html .theme-listing-grid .insight-card.listing:not(:first-child) .insight-text h3{ font-size:16px !important; line-height:1.35; margin:4px 0 0; }
+html #insights-track .insight-card:not(:first-child) .insight-text p,
+html #insights-track .insight-card:not(:first-child) .insight-more,
+html .theme-listing-grid .insight-card.listing:not(:first-child) .insight-text p,
+html .theme-listing-grid .insight-card.listing:not(:first-child) .insight-more{ display:none !important; }
+html .insight-date{ font-size:12.5px !important; }
+/* lead card: full-width visual on top */
+html #insights-track .insight-card:first-child{ flex-direction:column; }
+html #insights-track .insight-card:first-child .insight-inset{ width:100%; height:auto !important; aspect-ratio:5/4; }
+html .insight-card .insight-text p{ display:-webkit-box; -webkit-line-clamp:3; -webkit-box-orient:vertical; overflow:hidden; }
+
+/* ---------- 6. Research & Highlights: single column, shorter art ---------- */
+html #view-home .grid-4{ display:grid !important; grid-template-columns:1fr !important; gap:14px; overflow:visible !important; }
+html #view-home .grid-4 > *{ width:auto !important; min-width:0 !important; flex:none !important; }
+html #view-home .grid-4 .card-media{ height:150px !important; }
+html #view-home .promo-card .promo-btn{ margin-top:16px; }
+html #view-home .promo-card{ min-height:0 !important; }
+
+/* ---------- 7. Page headers: drop decorative illustration ---------- */
+html .db-header::after,
+html .db-header::before{ display:none !important; content:none !important; }
+html .db-header{ padding-bottom:8px !important; min-height:0 !important; }
+html .db-header h1{ font-size:30px; }
+
+/* ---------- 8. Dashboards page: one clear reading order per dashboard ---------- */
+/* order: title -> key numbers + summary -> chart -> key findings -> open dashboard + source */
+html .db-tabs{ display:grid !important; grid-template-columns:1fr 1fr; overflow:visible !important; }
+html .db-tab{ justify-content:center; min-height:46px; }
+html .dbcard{ display:flex; flex-direction:column; padding:18px 16px !important; border-radius:18px; }
+html .dbcard > .dbcard-head{ order:0; }
+html .dbcard > .dbcard-body{ order:1; }
+html .dbcard > .db-headbar{ order:2; }
+html .dbcard-head{ padding:0 !important; gap:10px; align-items:flex-start; }
+html .dbcard-head h3{ font-size:21px !important; line-height:1.25; }
+html .dbcard-head-main p{ font-size:14px !important; line-height:1.45; }
+html .dbcard-preview{ display:none !important; }
+html .dbcard-head-right{ flex:none; align-self:flex-start; }
+html .dbcard-body{ display:flex !important; flex-direction:column; gap:16px; padding:16px 0 0 !important; }
+html .dbcard-body > .db-col{ display:contents !important; }
+html .dbcard-body .db-info{ order:1; padding:0 !important; border:0 !important; background:none !important; box-shadow:none !important; margin:0 !important; }
+html .dbcard-body > .dbcard-main{ order:2; padding:0 !important; border:0 !important; background:none !important; box-shadow:none !important; margin:0 !important; }
+html .dbcard-body .dbcard-side{ order:3; }
+html .dbcard-body > .dh-about{ order:4; }
+html .dbcard .dash-tags{ display:none !important; }
+html .dbcard .dash-metrics{ display:grid !important; grid-template-columns:1fr 1fr; gap:10px; margin:0 0 12px; border:0; padding:0; }
+html .dbcard .dash-metrics > div{ background:var(--surface-sunken,#f4f6f6); border-radius:12px; padding:12px; border:0 !important; margin:0 !important; }
+html .dbcard .dash-metrics b{ font-size:26px !important; line-height:1.1; display:block; }
+html .dbcard .dash-metrics span{ font-size:13.5px !important; line-height:1.3; display:block; margin-top:4px; }
+html .dbcard .dash-caption{ font-size:15.5px !important; line-height:1.6; margin:0; }
+html .dbcard .dash-inset{ padding:12px !important; border-radius:14px; }
+
+/* key findings: readable text list instead of tiny chart thumbnails */
+html .dbcard-side{ display:flex !important; flex-direction:column; gap:0; padding:0 !important; border:0 !important; background:none !important; box-shadow:none !important; counter-reset:kf; }
+html .dbcard-side::before{ content:"Key findings"; display:block; font-size:12.5px; font-weight:700; letter-spacing:.08em; text-transform:uppercase; color:var(--accent-ink,#1d6b74); margin:0 0 4px; }
+html .dbcard-side .mini-insight{ display:grid !important; grid-template-columns:28px 1fr; gap:10px; padding:12px 0 !important; margin:0 !important; border:0 !important; border-top:1px solid var(--line,#e6e8e8) !important; background:none !important; box-shadow:none !important; counter-increment:kf; }
+html .dbcard-side .mini-insight::before{ content:counter(kf); width:26px; height:26px; border-radius:50%; background:var(--turmeric-500,#FFD500); color:#231F20; font-weight:700; font-size:13.5px; display:flex; align-items:center; justify-content:center; margin-top:1px; }
+html .dbcard-side .mini-insight-chart{ display:none !important; }
+html .dbcard-side .mini-insight h4{ font-size:15.5px !important; letter-spacing:0 !important; text-transform:none !important; margin:0 0 3px; line-height:1.3; }
+html .dbcard-side .mini-insight p{ font-size:14.5px !important; line-height:1.55; margin:0; }
+
+/* open dashboard + source sit at the end */
+html .db-headbar{ display:flex !important; flex-direction:column-reverse; gap:12px; margin:16px 0 0 !important; padding:16px 0 0 !important; border:0 !important; border-top:1px solid var(--line,#e6e8e8) !important; background:none !important; box-shadow:none !important; }
+html .db-headbar .btn.primary{ width:100%; justify-content:center; min-height:48px; margin:0; }
+html .db-headbar .dh-src,
+html .db-headbar .dh-sub{ font-size:13px !important; line-height:1.5; }
+
+/* ---------- 9. General phone hygiene ---------- */
+/* scroll fix: "hidden" on both html and body turns body into a second scroller on Chrome/Android,
+   which makes the page stick at the bottom. clip stops sideways overflow without creating a scroller. */
+html{ overflow-x:clip !important; overflow-y:visible !important; }
+html body{ overflow-x:clip !important; overflow-y:visible !important; }
+html a, html button{ touch-action:manipulation; }
+
+/* NSE sector chart: long sector names sit left of the viewBox; give them room on phones */
+html #db-nse-svg{ overflow:visible; margin-left:34px; width:calc(100% - 34px) !important; }
+html .db-headbar{ border-radius:0 !important; }
+html .db-headbar > *{ background:none !important; border:0 !important; box-shadow:none !important; padding:0 !important; }
+
+html .insight-card:not(:first-child) .insight-text h3{ display:block !important; -webkit-line-clamp:unset !important; overflow:visible !important; max-height:none !important; }
+
+
+/* long unbroken text (citation URLs) must wrap instead of widening the card */
+html .dbcard,
+html .dbcard *{ min-width:0; }
+html .dbcard{ max-width:100%; overflow:hidden; }
+html .dh-cite,
+html .dh-citepanel,
+html .dh-about,
+html .dh-src,
+html .dh-sub{ overflow-wrap:anywhere; word-break:break-word; max-width:100%; }
+html .dh-trust .dh-tbar{ flex-wrap:wrap; }
+
+/* compact insight rows: keep a small chart preview (white panel, slightly larger thumbnail) */
+html #insights-track .insight-card:not(:first-child),
+html .theme-listing-grid .insight-card.listing:not(:first-child){ grid-template-columns:112px 1fr; }
+html #insights-track .insight-card:not(:first-child) .insight-inset,
+html .theme-listing-grid .insight-card.listing:not(:first-child) .insight-inset{ width:112px !important; height:112px !important; }
+html #insights-track .insight-card:not(:first-child) .insight-inset:not(.human-media),
+html .theme-listing-grid .insight-card.listing:not(:first-child) .insight-inset:not(.human-media){ background:#fff !important; border:1px solid var(--line,#e6e8e8); padding:5px !important; display:flex !important; align-items:center; justify-content:center; }
+
+/* compact 112px thumbnails are too small for a title; the headline beside them describes the chart */
+html #insights-track .insight-card:not(:first-child) .inset-title,
+html .theme-listing-grid .insight-card.listing:not(:first-child) .inset-title{ display:none !important; }
+
+/* Data and Insights: featured work cards sit right after their own section (no scroll-driven swapping) */
+html #view-insights .insights-layout{ display:flex !important; flex-direction:column; gap:0; }
+html #view-insights .theme-accordion,
+html #view-insights .featured-work-panel{ display:contents !important; }
+html #view-insights .featured-work-panel > h2{ display:none !important; }
+html #view-insights .theme-block[data-theme-key="employment"]{ order:1; }
+html #view-insights .fw-card[data-theme-card="employment"]{ order:2; }
+html #view-insights .theme-block[data-theme-key="entrepreneurship"]{ order:3; }
+html #view-insights .fw-card[data-theme-card="entrepreneurship"]{ order:4; }
+html #view-insights .theme-block[data-theme-key="infrastructure"]{ order:5; }
+html #view-insights .fw-card:not([data-retired]){ display:flex !important; margin:16px 0 28px !important; }
+html #view-insights .fw-card[data-retired]{ display:none !important; }
+html #view-insights .theme-block{ margin:0 !important; }
+html #db-nse-inset{ overflow:visible !important; max-height:none !important; }
+
+}
+</style>
 </head>
 <body>
 
@@ -2860,59 +3372,7 @@ main,.sitebar-inner,.hero-video__inner{ max-width:calc(var(--page-max) + 2*var(-
 
 
 
-<style>
-.nav-search{ position:relative; }
-.nav-search .ns-btn{ display:inline-flex; align-items:center; justify-content:center; border:0; background:transparent; padding:0; margin:0; cursor:pointer; color:var(--ink-faint); width:22px; height:22px; border-radius:6px; flex:none; }
-.nav-search .ns-btn:hover{ color:var(--indigo-900); background:var(--surface-sunken); }
-.nav-search .ns-btn .icon{ width:16px; height:16px; color:inherit; }
-.nav-search input::-webkit-search-cancel-button{ cursor:pointer; }
-#view-search .db-header h1{ word-break:break-word; }
-#sr-form{ margin:18px 0 0; max-width:760px; }
-#sr-form .btn{ flex:none; }
-.sr-filters{ display:flex; gap:8px; flex-wrap:wrap; margin-top:16px; }
-.sr-chip{ font:inherit; font-size:15px; font-weight:600; padding:7px 14px; border-radius:999px; border:1.5px solid var(--border); background:var(--surface); color:var(--ink); cursor:pointer; }
-.sr-chip span{ font-weight:500; color:var(--ink-faint); margin-left:2px; }
-.sr-chip.active{ background:var(--ink); border-color:var(--ink); color:#fff; }
-.sr-chip.active span{ color:var(--turmeric-500); }
-#sr-results{ max-width:920px; padding-bottom:48px; }
-.sr-group{ font-size:14px; font-weight:700; letter-spacing:.09em; text-transform:uppercase; color:var(--ink-faint); margin:28px 0 10px; font-family:inherit; }
-.sr-item{ position:relative; border:1px solid var(--border-soft); border-radius:16px; background:var(--surface); margin-bottom:12px; transition:border-color .15s, box-shadow .15s; }
-.sr-item:hover{ border-color:var(--indigo-500); box-shadow:var(--shadow-md); }
-.sr-open{ display:flex; gap:18px; width:100%; text-align:left; border:0; background:transparent; padding:16px; cursor:pointer; font:inherit; color:inherit; border-radius:16px; }
-.sr-thumb{ flex:0 0 180px; height:120px; border-radius:10px; background:var(--surface-sunken); padding:8px; display:flex; align-items:center; justify-content:center; overflow:hidden; }
-.sr-thumb svg{ width:100%; height:100%; }
-.sr-thumb-ico{ flex-basis:64px; height:64px; padding:0; }
-.sr-thumb-ico .icon{ width:28px; height:28px; color:var(--chart-line); }
-.sr-body{ display:flex; flex-direction:column; gap:5px; min-width:0; padding-right:4px; }
-.sr-kicker{ font-size:14px; color:var(--ink-faint); }
-.sr-kicker b{ color:var(--chart-line); font-weight:700; text-transform:uppercase; letter-spacing:.06em; font-size:13px; }
-.sr-title{ font-size:17px; font-weight:600; line-height:1.35; color:var(--ink); }
-.sr-snip{ font-size:16px; color:var(--ink-dim); line-height:1.55; }
-.sr-more{ font-size:15px; font-weight:600; color:var(--chart-line); margin-top:2px; }
-.sr-ext{ position:absolute; right:16px; bottom:14px; font-size:14.5px; font-weight:600; color:var(--link); display:inline-flex; align-items:center; gap:4px; text-decoration:none; }
-.sr-ext:hover{ text-decoration:underline; }
-.sr-ext .icon{ width:13px; height:13px; }
-.sr-item mark{ background:var(--accent-wash); color:inherit; border-radius:2px; padding:0 1px; }
-.sr-empty{ padding:36px 4px; }
-.sr-empty h3{ font-size:20px; margin-bottom:6px; }
-.sr-empty p{ color:var(--ink-dim); margin:0 0 14px; }
-.sr-suggest{ display:flex; flex-wrap:wrap; gap:8px; }
-.sr-suggest .pill{ cursor:pointer; font:inherit; }
-#view-search .db-header::after{ display:none; content:none; }
-#view-search .db-header{ padding-bottom:20px; }
-.sr-fix{ color:var(--ink-dim); }
-.sr-fix b{ color:var(--ink); }
-.dh-explore{ display:block; margin-top:6px; padding:12px 16px; border-radius:10px; background:var(--surface-sunken); font-size:16px; line-height:1.6; }
-.dh-explore a{ color:var(--link); font-weight:600; }
-.ds-flash{ animation:dsFlash 1.6s ease; }
-@keyframes dsFlash{ 0%,60%{ box-shadow:0 0 0 3px var(--turmeric-500); } 100%{ box-shadow:none; } }
-@media (max-width:640px){
-  .sr-open{ flex-direction:column; gap:12px; padding:14px; }
-  .sr-thumb{ flex-basis:auto; width:100%; height:150px; }
-  .sr-thumb-ico{ width:52px; height:52px; }
-  .sr-ext{ position:static; padding:0 14px 14px; }
-}
-</style>
+
 
 
 
@@ -4662,88 +5122,13 @@ wrap.addEventListener('focusout',hide);
 })();
 
 </script>
-<style id="feedback-css">
-/* ===== Site feedback (header button + dialog) — 26 Nov 2026 ===== */
-.fb-open{ display:inline-flex; align-items:center; gap:7px; height:40px; padding:6px 16px; border-radius:999px; background:transparent; color:#fff; border:1px solid rgba(255,255,255,.45); font:inherit; font-size:14.5px; font-weight:600; cursor:pointer; white-space:nowrap; }
-.fb-open:hover{ border-color:var(--ui-yellow,#FFD400); color:var(--ui-yellow,#FFD400); }
-.fb-open:focus-visible{ outline:2px solid var(--ui-yellow,#FFD400); outline-offset:2px; }
-.fb-open svg{ width:18px; height:18px; flex:none; fill:none; stroke:currentColor; stroke-width:1.8; stroke-linecap:round; stroke-linejoin:round; }
-dialog.fb-dlg{ width:min(520px, calc(100vw - 32px)); max-height:min(88vh, 760px); padding:0; border:0; border-radius:18px; background:var(--surface,#fff); color:var(--ink,#231F20); box-shadow:0 24px 64px rgba(0,0,0,.28); overflow:auto; }
-dialog.fb-dlg::backdrop{ background:rgba(20,18,19,.55); }
-.fb-dlg form{ padding:24px 26px 22px; display:flex; flex-direction:column; gap:16px; }
-.fb-head{ display:flex; align-items:flex-start; justify-content:space-between; gap:12px; }
-.fb-head h2{ margin:0; font-size:22px; line-height:1.25; }
-.fb-head p{ margin:6px 0 0; font-size:14.5px; line-height:1.5; color:var(--ink-dim,#555); }
-.fb-x{ flex:none; width:40px; height:40px; border-radius:50%; border:0; background:var(--surface-sunken,#f2f3f3); color:inherit; cursor:pointer; display:flex; align-items:center; justify-content:center; }
-.fb-x svg{ width:18px; height:18px; stroke:currentColor; stroke-width:2; fill:none; stroke-linecap:round; }
-.fb-lab{ display:block; font-size:14px; font-weight:600; margin:0 0 8px; }
-.fb-types{ display:flex; flex-wrap:wrap; gap:8px; border:0; padding:0; margin:0; }
-.fb-types legend{ font-size:14px; font-weight:600; margin:0 0 8px; padding:0; }
-.fb-types label{ position:relative; }
-.fb-types input{ position:absolute; opacity:0; inset:0; margin:0; cursor:pointer; }
-.fb-types span{ display:inline-block; padding:8px 14px; border-radius:999px; border:1px solid var(--line,#d9dcdc); font-size:14px; line-height:1.2; }
-.fb-types input:checked + span{ background:var(--brand-teal-ink,#1d6b74); border-color:var(--brand-teal-ink,#1d6b74); color:#fff; }
-.fb-types input:focus-visible + span{ outline:2px solid var(--ui-yellow,#FFD400); outline-offset:2px; }
-.fb-dlg textarea,.fb-dlg input[type=email]{ width:100%; box-sizing:border-box; font:inherit; font-size:16px; line-height:1.5; color:inherit; background:var(--bg,#fff); border:1px solid var(--line,#cfd3d3); border-radius:10px; padding:10px 12px; }
-.fb-dlg textarea{ min-height:120px; resize:vertical; }
-.fb-dlg textarea:focus,.fb-dlg input[type=email]:focus{ outline:2px solid var(--brand-teal,#009FA2); outline-offset:0; border-color:transparent; }
-.fb-meta{ display:flex; justify-content:space-between; gap:12px; font-size:12.5px; color:var(--ink-faint,#6b6f70); margin-top:6px; }
-.fb-err{ color:#b42318; font-size:13.5px; margin:6px 0 0; }
-.fb-check{ display:flex; gap:10px; align-items:flex-start; font-size:14.5px; line-height:1.45; cursor:pointer; }
-.fb-check input{ width:18px; height:18px; margin:2px 0 0; accent-color:var(--brand-teal-ink,#1d6b74); flex:none; }
-.fb-reply[hidden],.fb-dlg form[hidden]{ display:none; }
-.fb-note{ font-size:12.5px; color:var(--ink-faint,#6b6f70); margin:6px 0 0; line-height:1.45; }
-.fb-ctx{ font-size:12.5px; color:var(--ink-faint,#6b6f70); background:var(--surface-sunken,#f4f6f6); border-radius:10px; padding:8px 12px; line-height:1.45; }
-.fb-hp{ position:absolute !important; left:-9999px !important; width:1px; height:1px; overflow:hidden; }
-.fb-actions{ display:flex; align-items:center; gap:12px; flex-wrap:wrap; }
-.fb-send{ height:44px; padding:0 22px; border-radius:999px; border:0; background:var(--ui-black,#231F20); color:var(--ui-yellow,#FFD400); font:inherit; font-size:15px; font-weight:700; cursor:pointer; }
-.fb-send[aria-busy="true"]{ opacity:.6; cursor:progress; }
-.fb-status{ font-size:14px; margin:0; }
-.fb-status.bad{ color:#b42318; }
-.fb-done{ padding:34px 26px 30px; text-align:center; }
-.fb-done[hidden]{ display:none; }
-.fb-done .tick{ width:52px; height:52px; border-radius:50%; background:var(--ui-yellow,#FFD400); color:var(--ui-black,#231F20); display:inline-flex; align-items:center; justify-content:center; margin-bottom:12px; }
-.fb-done .tick svg{ width:26px; height:26px; stroke:currentColor; stroke-width:2.4; fill:none; stroke-linecap:round; stroke-linejoin:round; }
-.fb-done h2{ margin:0 0 6px; font-size:21px; }
-.fb-done p{ margin:0 0 18px; font-size:15px; color:var(--ink-dim,#555); }
-/* phones: icon-only header button, form as a bottom sheet */
-html[data-device="phone"] .fb-open{ width:40px; padding:0; justify-content:center; }
-html[data-device="phone"] .fb-open .fb-open-txt{ position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap; }
-html[data-device="phone"] dialog.fb-dlg{ width:100vw; max-width:100vw; max-height:92dvh; margin:auto 0 0; border-radius:20px 20px 0 0; }
-html[data-device="phone"] .fb-dlg form{ padding:20px 18px calc(18px + env(safe-area-inset-bottom)); }
-@media (max-width:720px){
-  .fb-open{ width:40px; padding:0; justify-content:center; }
-  .fb-open .fb-open-txt{ position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap; }
-  dialog.fb-dlg{ width:100vw; max-width:100vw; max-height:92dvh; margin:auto 0 0; border-radius:20px 20px 0 0; }
-  .fb-dlg form{ padding:20px 18px calc(18px + env(safe-area-inset-bottom)); }
-}
-/* narrower laptops and tablets: icon-only button (tooltip + screen-reader label) and a slightly narrower search, so the nav links keep their room */
-@media (max-width:1599px){
-  .fb-open{ width:40px; padding:0; justify-content:center; }
-  .fb-open .fb-open-txt{ position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap; }
-  .sitebar .nav-actions{ gap:8px !important; }
-}
-@media (min-width:721px) and (max-width:1599px){ .sitebar .nav-search{ min-width:0 !important; width:156px !important; } }
-@media (min-width:721px) and (max-width:1339px){ .sitebar .nav-search{ width:132px !important; } }
-@media (min-width:721px) and (max-width:1180px){ .sitebar .nav-search{ width:110px !important; } }
-/* phones: make room for the icon beside Subscribe */
-html[data-device="phone"] .fb-open{ width:36px; height:36px; }
-html[data-device="phone"] .nav-actions{ gap:6px !important; }
-html[data-device="phone"] #sub-menu > .btn{ padding:0 12px !important; height:36px; min-height:36px; font-size:13.5px !important; }
-@media (max-width:720px){
-  .fb-open{ width:36px; height:36px; }
-  .nav-actions{ gap:6px !important; }
-  #sub-menu > .btn{ padding:0 12px !important; height:36px; min-height:36px; font-size:13.5px !important; }
-}
-@media (max-width:400px){ .sitebar .brand-logo{ height:24px !important; } }
-@media (max-width:345px){ .sitebar .brand-div,.sitebar .brand-text{ display:none !important; } }
-</style>
+
 
 <dialog class="fb-dlg" id="fb-dlg" aria-labelledby="fb-title">
   <form id="fb-form" novalidate>
     <div class="fb-head">
       <div>
-        <h2 id="fb-title">Share your feedback</h2>
+        <h2 id="fb-title" tabindex="-1">Share your feedback</h2>
         <p>Tell us what's useful, what's missing or what looks wrong. It's anonymous unless you choose to leave your email.</p>
       </div>
       <button type="button" class="fb-x" data-fb-close aria-label="Close feedback form"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></svg></button>
@@ -4829,7 +5214,10 @@ html[data-device="phone"] #sub-menu > .btn{ padding:0 12px !important; height:36
     var c=context();
     ctxEl.textContent='Sent with: the page you’re on ('+c.page+(c.insight?' › '+c.insight:'')+'). We don\u2019t ask for your name, and nothing tracks you.';
     form.hidden=false; done.hidden=true; status.textContent=''; status.className='fb-status';
-    dlg.showModal(); setTimeout(function(){ msg.focus(); },30);
+    dlg.showModal(); dlg.scrollTop=0;
+    /* touch screens: focus the heading so the keyboard doesn't jump up and hide the top of the form; desktop: straight into the text box */
+    var touch=window.matchMedia && matchMedia('(pointer:coarse)').matches;
+    setTimeout(function(){ if(touch){ document.getElementById('fb-title').focus({preventScroll:true}); } else { msg.focus(); } },30);
   }
   function close(){ if(dlg.open) dlg.close(); }
   dlg.addEventListener('close',function(){ if(opener && opener.focus) opener.focus(); });
@@ -4881,387 +5269,5 @@ html[data-device="phone"] #sub-menu > .btn{ padding:0 12px !important; height:36
 })();
 </script>
 
-<style id="phone-layout-v2">
-/* =====================================================================
-   PHONE LAYOUT v2 (2026-11-26)
-   Applies only when <html data-device="phone"> is set by the device
-   detection script in <head>. PCs, laptops and tablets never get these
-   rules, so their layout is unchanged.
-   ===================================================================== */
-
-/* ---------- 1. Home: remove hero + subscription form ---------- */
-html[data-device="phone"] #view-home .hero-video{ display:none !important; }
-html[data-device="phone"] #view-home .home-subscribe-card{ display:none !important; }
-html[data-device="phone"] #featured-dashboards{ margin-top:22px !important; }
-html[data-device="phone"] .dash-with-subscribe{ display:block !important; }
-
-/* ---------- 2. Quick links: 3 equal tiles, no sideways scroll ---------- */
-html[data-device="phone"] .quick-links{ padding:12px 16px 14px; flex-direction:column; align-items:stretch; gap:8px; overflow:visible; }
-html[data-device="phone"] .quick-links .ql-label{ display:none; }
-html[data-device="phone"] .quick-links .pill-row{ display:grid !important; grid-template-columns:repeat(3,1fr); gap:8px; overflow:visible !important; flex-wrap:nowrap; padding:0; margin:0; }
-html[data-device="phone"] .quick-links .pill{ flex-direction:column; justify-content:center; text-align:center; gap:6px; min-height:72px; padding:10px 6px; border-radius:14px; font-size:13.5px; line-height:1.2; white-space:normal; width:auto; }
-html[data-device="phone"] .quick-links .pill .icon{ width:20px; height:20px; }
-
-/* ---------- 3. Home carousels become vertical stacks ---------- */
-html[data-device="phone"] #view-home .carousel{ overflow:visible; padding:0; margin:0; }
-html[data-device="phone"] #view-home .carousel-arrow,
-html[data-device="phone"] #view-home .carousel-dots{ display:none !important; }
-html[data-device="phone"] #dash-track,
-html[data-device="phone"] #insights-track{ display:flex !important; flex-direction:column; flex-wrap:nowrap; gap:12px; overflow:visible !important; scroll-snap-type:none !important; padding:0 !important; margin:0 !important; transform:none !important; }
-html[data-device="phone"] #dash-track > *,
-html[data-device="phone"] #insights-track > *{ width:auto !important; min-width:0 !important; max-width:none !important; flex:none !important; scroll-snap-align:none; }
-html[data-device="phone"] #view-home .section-head{ flex-wrap:wrap; gap:10px; }
-
-/* ---------- 4. Home: Featured Dashboards as compact summary cards ---------- */
-html[data-device="phone"] #dash-track .dash-card{ padding:18px 18px 16px; border-radius:18px; border-left:5px solid var(--brand-teal,#009FA2); }
-html[data-device="phone"] #dash-track .dash-card h3{ font-size:19px; line-height:1.3; margin:0 0 4px; }
-html[data-device="phone"] #dash-track .dash-sub{ font-size:14px; line-height:1.45; margin:0 0 12px; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; }
-html[data-device="phone"] #dash-track .dash-inset,
-html[data-device="phone"] #dash-track .dash-tags,
-html[data-device="phone"] #dash-track .dh-trust{ display:none !important; }
-html[data-device="phone"] #dash-track .dash-body{ display:block; }
-html[data-device="phone"] #dash-track .dash-meta{ padding:0; display:flex; flex-direction:column; gap:12px; }
-html[data-device="phone"] #dash-track .dash-metrics{ display:grid; grid-template-columns:1fr 1fr; gap:10px; margin:0; padding:0; border:0; }
-html[data-device="phone"] #dash-track .dash-metrics > div{ background:var(--surface-sunken,#f4f6f6); border-radius:12px; padding:10px 12px; border:0 !important; margin:0 !important; }
-html[data-device="phone"] #dash-track .dash-metrics b{ font-size:24px; line-height:1.1; display:block; }
-html[data-device="phone"] #dash-track .dash-metrics span{ font-size:13px; line-height:1.3; display:block; margin-top:3px; }
-html[data-device="phone"] #dash-track .dash-caption{ font-size:15px; line-height:1.55; margin:0; display:-webkit-box; -webkit-line-clamp:3; -webkit-box-orient:vertical; overflow:hidden; }
-html[data-device="phone"] #dash-track .btn.primary{ align-self:stretch; justify-content:center; min-height:46px; margin:0; }
-
-/* ---------- 5. Insight cards (home + Data and Insights): one lead card, then compact rows ---------- */
-/* compact row: thumbnail left, source + headline right */
-html[data-device="phone"] #insights-track .insight-card:not(:first-child),
-html[data-device="phone"] .theme-listing-grid .insight-card.listing:not(:first-child){
-  display:grid !important; grid-template-columns:96px 1fr; gap:14px; align-items:start;
-  padding:14px 0 !important; min-height:0; border-radius:0; background:none; box-shadow:none; border:0; border-top:1px solid var(--line,#e6e8e8);
-}
-html[data-device="phone"] #insights-track .insight-card:not(:first-child){ padding:14px !important; border:1px solid var(--line,#e6e8e8); border-radius:14px; background:var(--surface,#fff); }
-html[data-device="phone"] #insights-track .insight-card:not(:first-child) .insight-inset,
-html[data-device="phone"] .theme-listing-grid .insight-card.listing:not(:first-child) .insight-inset{
-  width:96px !important; height:96px !important; min-height:0 !important; aspect-ratio:auto !important; flex:none !important; padding:6px !important; border-radius:10px !important; overflow:hidden;
-}
-html[data-device="phone"] #insights-track .insight-card:not(:first-child) .insight-inset.human-media,
-html[data-device="phone"] .theme-listing-grid .insight-card.listing:not(:first-child) .insight-inset.human-media{ padding:0 !important; }
-html[data-device="phone"] #insights-track .insight-card:not(:first-child) .insight-inset svg,
-html[data-device="phone"] .theme-listing-grid .insight-card.listing:not(:first-child) .insight-inset svg{ width:100% !important; height:100% !important; max-width:none; }
-html[data-device="phone"] #insights-track .insight-card:not(:first-child) .insight-text,
-html[data-device="phone"] .theme-listing-grid .insight-card.listing:not(:first-child) .insight-text{ padding:0 !important; min-width:0; }
-html[data-device="phone"] #insights-track .insight-card:not(:first-child) .insight-text h3,
-html[data-device="phone"] .theme-listing-grid .insight-card.listing:not(:first-child) .insight-text h3{ font-size:16px !important; line-height:1.35; margin:4px 0 0; }
-html[data-device="phone"] #insights-track .insight-card:not(:first-child) .insight-text p,
-html[data-device="phone"] #insights-track .insight-card:not(:first-child) .insight-more,
-html[data-device="phone"] .theme-listing-grid .insight-card.listing:not(:first-child) .insight-text p,
-html[data-device="phone"] .theme-listing-grid .insight-card.listing:not(:first-child) .insight-more{ display:none !important; }
-html[data-device="phone"] .insight-date{ font-size:12.5px !important; }
-/* lead card: full-width visual on top */
-html[data-device="phone"] #insights-track .insight-card:first-child{ flex-direction:column; }
-html[data-device="phone"] #insights-track .insight-card:first-child .insight-inset{ width:100%; height:auto !important; aspect-ratio:5/4; }
-html[data-device="phone"] .insight-card .insight-text p{ display:-webkit-box; -webkit-line-clamp:3; -webkit-box-orient:vertical; overflow:hidden; }
-
-/* ---------- 6. Research & Highlights: single column, shorter art ---------- */
-html[data-device="phone"] #view-home .grid-4{ display:grid !important; grid-template-columns:1fr !important; gap:14px; overflow:visible !important; }
-html[data-device="phone"] #view-home .grid-4 > *{ width:auto !important; min-width:0 !important; flex:none !important; }
-html[data-device="phone"] #view-home .grid-4 .card-media{ height:150px !important; }
-html[data-device="phone"] #view-home .promo-card .promo-btn{ margin-top:16px; }
-html[data-device="phone"] #view-home .promo-card{ min-height:0 !important; }
-
-/* ---------- 7. Page headers: drop decorative illustration ---------- */
-html[data-device="phone"] .db-header::after,
-html[data-device="phone"] .db-header::before{ display:none !important; content:none !important; }
-html[data-device="phone"] .db-header{ padding-bottom:8px !important; min-height:0 !important; }
-html[data-device="phone"] .db-header h1{ font-size:30px; }
-
-/* ---------- 8. Dashboards page: one clear reading order per dashboard ---------- */
-/* order: title -> key numbers + summary -> chart -> key findings -> open dashboard + source */
-html[data-device="phone"] .db-tabs{ display:grid !important; grid-template-columns:1fr 1fr; overflow:visible !important; }
-html[data-device="phone"] .db-tab{ justify-content:center; min-height:46px; }
-html[data-device="phone"] .dbcard{ display:flex; flex-direction:column; padding:18px 16px !important; border-radius:18px; }
-html[data-device="phone"] .dbcard > .dbcard-head{ order:0; }
-html[data-device="phone"] .dbcard > .dbcard-body{ order:1; }
-html[data-device="phone"] .dbcard > .db-headbar{ order:2; }
-html[data-device="phone"] .dbcard-head{ padding:0 !important; gap:10px; align-items:flex-start; }
-html[data-device="phone"] .dbcard-head h3{ font-size:21px !important; line-height:1.25; }
-html[data-device="phone"] .dbcard-head-main p{ font-size:14px !important; line-height:1.45; }
-html[data-device="phone"] .dbcard-preview{ display:none !important; }
-html[data-device="phone"] .dbcard-head-right{ flex:none; align-self:flex-start; }
-html[data-device="phone"] .dbcard-body{ display:flex !important; flex-direction:column; gap:16px; padding:16px 0 0 !important; }
-html[data-device="phone"] .dbcard-body > .db-col{ display:contents !important; }
-html[data-device="phone"] .dbcard-body .db-info{ order:1; padding:0 !important; border:0 !important; background:none !important; box-shadow:none !important; margin:0 !important; }
-html[data-device="phone"] .dbcard-body > .dbcard-main{ order:2; padding:0 !important; border:0 !important; background:none !important; box-shadow:none !important; margin:0 !important; }
-html[data-device="phone"] .dbcard-body .dbcard-side{ order:3; }
-html[data-device="phone"] .dbcard-body > .dh-about{ order:4; }
-html[data-device="phone"] .dbcard .dash-tags{ display:none !important; }
-html[data-device="phone"] .dbcard .dash-metrics{ display:grid !important; grid-template-columns:1fr 1fr; gap:10px; margin:0 0 12px; border:0; padding:0; }
-html[data-device="phone"] .dbcard .dash-metrics > div{ background:var(--surface-sunken,#f4f6f6); border-radius:12px; padding:12px; border:0 !important; margin:0 !important; }
-html[data-device="phone"] .dbcard .dash-metrics b{ font-size:26px !important; line-height:1.1; display:block; }
-html[data-device="phone"] .dbcard .dash-metrics span{ font-size:13.5px !important; line-height:1.3; display:block; margin-top:4px; }
-html[data-device="phone"] .dbcard .dash-caption{ font-size:15.5px !important; line-height:1.6; margin:0; }
-html[data-device="phone"] .dbcard .dash-inset{ padding:12px !important; border-radius:14px; }
-
-/* key findings: readable text list instead of tiny chart thumbnails */
-html[data-device="phone"] .dbcard-side{ display:flex !important; flex-direction:column; gap:0; padding:0 !important; border:0 !important; background:none !important; box-shadow:none !important; counter-reset:kf; }
-html[data-device="phone"] .dbcard-side::before{ content:"Key findings"; display:block; font-size:12.5px; font-weight:700; letter-spacing:.08em; text-transform:uppercase; color:var(--accent-ink,#1d6b74); margin:0 0 4px; }
-html[data-device="phone"] .dbcard-side .mini-insight{ display:grid !important; grid-template-columns:28px 1fr; gap:10px; padding:12px 0 !important; margin:0 !important; border:0 !important; border-top:1px solid var(--line,#e6e8e8) !important; background:none !important; box-shadow:none !important; counter-increment:kf; }
-html[data-device="phone"] .dbcard-side .mini-insight::before{ content:counter(kf); width:26px; height:26px; border-radius:50%; background:var(--turmeric-500,#FFD500); color:#231F20; font-weight:700; font-size:13.5px; display:flex; align-items:center; justify-content:center; margin-top:1px; }
-html[data-device="phone"] .dbcard-side .mini-insight-chart{ display:none !important; }
-html[data-device="phone"] .dbcard-side .mini-insight h4{ font-size:15.5px !important; letter-spacing:0 !important; text-transform:none !important; margin:0 0 3px; line-height:1.3; }
-html[data-device="phone"] .dbcard-side .mini-insight p{ font-size:14.5px !important; line-height:1.55; margin:0; }
-
-/* open dashboard + source sit at the end */
-html[data-device="phone"] .db-headbar{ display:flex !important; flex-direction:column-reverse; gap:12px; margin:16px 0 0 !important; padding:16px 0 0 !important; border:0 !important; border-top:1px solid var(--line,#e6e8e8) !important; background:none !important; box-shadow:none !important; }
-html[data-device="phone"] .db-headbar .btn.primary{ width:100%; justify-content:center; min-height:48px; margin:0; }
-html[data-device="phone"] .db-headbar .dh-src,
-html[data-device="phone"] .db-headbar .dh-sub{ font-size:13px !important; line-height:1.5; }
-
-/* ---------- 9. General phone hygiene ---------- */
-/* scroll fix: "hidden" on both html and body turns body into a second scroller on Chrome/Android,
-   which makes the page stick at the bottom. clip stops sideways overflow without creating a scroller. */
-html[data-device="phone"]{ overflow-x:clip !important; overflow-y:visible !important; }
-html[data-device="phone"] body{ overflow-x:clip !important; overflow-y:visible !important; }
-html[data-device="phone"] a, html[data-device="phone"] button{ touch-action:manipulation; }
-
-/* NSE sector chart: long sector names sit left of the viewBox; give them room on phones */
-html[data-device="phone"] #db-nse-svg{ overflow:visible; margin-left:34px; width:calc(100% - 34px) !important; }
-html[data-device="phone"] .db-headbar{ border-radius:0 !important; }
-html[data-device="phone"] .db-headbar > *{ background:none !important; border:0 !important; box-shadow:none !important; padding:0 !important; }
-
-html[data-device="phone"] .insight-card:not(:first-child) .insight-text h3{ display:block !important; -webkit-line-clamp:unset !important; overflow:visible !important; max-height:none !important; }
-
-/* phones held sideways (wider than 720px): keep the desktop top bar but make it fit */
-@media (min-width:721px){
-  html[data-device="phone"] .sitebar .nav-search{ display:none !important; }
-  html[data-device="phone"] .sitebar .brand-tag{ display:none !important; }
-  html[data-device="phone"] .sitebar .nav-link{ font-size:14px !important; padding:8px 6px !important; }
-  html[data-device="phone"] .sitebar .nav-link .icon{ display:none !important; }
-  html[data-device="phone"] .sitebar .sitenav{ gap:12px !important; }
-}
-
-/* long unbroken text (citation URLs) must wrap instead of widening the card */
-html[data-device="phone"] .dbcard,
-html[data-device="phone"] .dbcard *{ min-width:0; }
-html[data-device="phone"] .dbcard{ max-width:100%; overflow:hidden; }
-html[data-device="phone"] .dh-cite,
-html[data-device="phone"] .dh-citepanel,
-html[data-device="phone"] .dh-about,
-html[data-device="phone"] .dh-src,
-html[data-device="phone"] .dh-sub{ overflow-wrap:anywhere; word-break:break-word; max-width:100%; }
-html[data-device="phone"] .dh-trust .dh-tbar{ flex-wrap:wrap; }
-
-/* compact insight rows: keep a small chart preview (white panel, slightly larger thumbnail) */
-html[data-device="phone"] #insights-track .insight-card:not(:first-child),
-html[data-device="phone"] .theme-listing-grid .insight-card.listing:not(:first-child){ grid-template-columns:112px 1fr; }
-html[data-device="phone"] #insights-track .insight-card:not(:first-child) .insight-inset,
-html[data-device="phone"] .theme-listing-grid .insight-card.listing:not(:first-child) .insight-inset{ width:112px !important; height:112px !important; }
-html[data-device="phone"] #insights-track .insight-card:not(:first-child) .insight-inset:not(.human-media),
-html[data-device="phone"] .theme-listing-grid .insight-card.listing:not(:first-child) .insight-inset:not(.human-media){ background:#fff !important; border:1px solid var(--line,#e6e8e8); padding:5px !important; display:flex !important; align-items:center; justify-content:center; }
-
-/* compact 112px thumbnails are too small for a title; the headline beside them describes the chart */
-html[data-device="phone"] #insights-track .insight-card:not(:first-child) .inset-title,
-html[data-device="phone"] .theme-listing-grid .insight-card.listing:not(:first-child) .inset-title{ display:none !important; }
-
-/* Data and Insights: featured work cards sit right after their own section (no scroll-driven swapping) */
-html[data-device="phone"] #view-insights .insights-layout{ display:flex !important; flex-direction:column; gap:0; }
-html[data-device="phone"] #view-insights .theme-accordion,
-html[data-device="phone"] #view-insights .featured-work-panel{ display:contents !important; }
-html[data-device="phone"] #view-insights .featured-work-panel > h2{ display:none !important; }
-html[data-device="phone"] #view-insights .theme-block[data-theme-key="employment"]{ order:1; }
-html[data-device="phone"] #view-insights .fw-card[data-theme-card="employment"]{ order:2; }
-html[data-device="phone"] #view-insights .theme-block[data-theme-key="entrepreneurship"]{ order:3; }
-html[data-device="phone"] #view-insights .fw-card[data-theme-card="entrepreneurship"]{ order:4; }
-html[data-device="phone"] #view-insights .theme-block[data-theme-key="infrastructure"]{ order:5; }
-html[data-device="phone"] #view-insights .fw-card:not([data-retired]){ display:flex !important; margin:16px 0 28px !important; }
-html[data-device="phone"] #view-insights .fw-card[data-retired]{ display:none !important; }
-html[data-device="phone"] #view-insights .theme-block{ margin:0 !important; }
-html[data-device="phone"] #db-nse-inset{ overflow:visible !important; max-height:none !important; }
-
-/* ---- width-based copy: works even if the script fails or reports the wrong size ---- */
-@media (max-width:720px){
-
-/* =====================================================================
-   PHONE LAYOUT v2 (2026-11-26)
-   Applies only when <html data-device="phone"> is set by the device
-   detection script in <head>. PCs, laptops and tablets never get these
-   rules, so their layout is unchanged.
-   ===================================================================== */
-
-/* ---------- 1. Home: remove hero + subscription form ---------- */
-html #view-home .hero-video{ display:none !important; }
-html #view-home .home-subscribe-card{ display:none !important; }
-html #featured-dashboards{ margin-top:22px !important; }
-html .dash-with-subscribe{ display:block !important; }
-
-/* ---------- 2. Quick links: 3 equal tiles, no sideways scroll ---------- */
-html .quick-links{ padding:12px 16px 14px; flex-direction:column; align-items:stretch; gap:8px; overflow:visible; }
-html .quick-links .ql-label{ display:none; }
-html .quick-links .pill-row{ display:grid !important; grid-template-columns:repeat(3,1fr); gap:8px; overflow:visible !important; flex-wrap:nowrap; padding:0; margin:0; }
-html .quick-links .pill{ flex-direction:column; justify-content:center; text-align:center; gap:6px; min-height:72px; padding:10px 6px; border-radius:14px; font-size:13.5px; line-height:1.2; white-space:normal; width:auto; }
-html .quick-links .pill .icon{ width:20px; height:20px; }
-
-/* ---------- 3. Home carousels become vertical stacks ---------- */
-html #view-home .carousel{ overflow:visible; padding:0; margin:0; }
-html #view-home .carousel-arrow,
-html #view-home .carousel-dots{ display:none !important; }
-html #dash-track,
-html #insights-track{ display:flex !important; flex-direction:column; flex-wrap:nowrap; gap:12px; overflow:visible !important; scroll-snap-type:none !important; padding:0 !important; margin:0 !important; transform:none !important; }
-html #dash-track > *,
-html #insights-track > *{ width:auto !important; min-width:0 !important; max-width:none !important; flex:none !important; scroll-snap-align:none; }
-html #view-home .section-head{ flex-wrap:wrap; gap:10px; }
-
-/* ---------- 4. Home: Featured Dashboards as compact summary cards ---------- */
-html #dash-track .dash-card{ padding:18px 18px 16px; border-radius:18px; border-left:5px solid var(--brand-teal,#009FA2); }
-html #dash-track .dash-card h3{ font-size:19px; line-height:1.3; margin:0 0 4px; }
-html #dash-track .dash-sub{ font-size:14px; line-height:1.45; margin:0 0 12px; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; }
-html #dash-track .dash-inset,
-html #dash-track .dash-tags,
-html #dash-track .dh-trust{ display:none !important; }
-html #dash-track .dash-body{ display:block; }
-html #dash-track .dash-meta{ padding:0; display:flex; flex-direction:column; gap:12px; }
-html #dash-track .dash-metrics{ display:grid; grid-template-columns:1fr 1fr; gap:10px; margin:0; padding:0; border:0; }
-html #dash-track .dash-metrics > div{ background:var(--surface-sunken,#f4f6f6); border-radius:12px; padding:10px 12px; border:0 !important; margin:0 !important; }
-html #dash-track .dash-metrics b{ font-size:24px; line-height:1.1; display:block; }
-html #dash-track .dash-metrics span{ font-size:13px; line-height:1.3; display:block; margin-top:3px; }
-html #dash-track .dash-caption{ font-size:15px; line-height:1.55; margin:0; display:-webkit-box; -webkit-line-clamp:3; -webkit-box-orient:vertical; overflow:hidden; }
-html #dash-track .btn.primary{ align-self:stretch; justify-content:center; min-height:46px; margin:0; }
-
-/* ---------- 5. Insight cards (home + Data and Insights): one lead card, then compact rows ---------- */
-/* compact row: thumbnail left, source + headline right */
-html #insights-track .insight-card:not(:first-child),
-html .theme-listing-grid .insight-card.listing:not(:first-child){
-  display:grid !important; grid-template-columns:96px 1fr; gap:14px; align-items:start;
-  padding:14px 0 !important; min-height:0; border-radius:0; background:none; box-shadow:none; border:0; border-top:1px solid var(--line,#e6e8e8);
-}
-html #insights-track .insight-card:not(:first-child){ padding:14px !important; border:1px solid var(--line,#e6e8e8); border-radius:14px; background:var(--surface,#fff); }
-html #insights-track .insight-card:not(:first-child) .insight-inset,
-html .theme-listing-grid .insight-card.listing:not(:first-child) .insight-inset{
-  width:96px !important; height:96px !important; min-height:0 !important; aspect-ratio:auto !important; flex:none !important; padding:6px !important; border-radius:10px !important; overflow:hidden;
-}
-html #insights-track .insight-card:not(:first-child) .insight-inset.human-media,
-html .theme-listing-grid .insight-card.listing:not(:first-child) .insight-inset.human-media{ padding:0 !important; }
-html #insights-track .insight-card:not(:first-child) .insight-inset svg,
-html .theme-listing-grid .insight-card.listing:not(:first-child) .insight-inset svg{ width:100% !important; height:100% !important; max-width:none; }
-html #insights-track .insight-card:not(:first-child) .insight-text,
-html .theme-listing-grid .insight-card.listing:not(:first-child) .insight-text{ padding:0 !important; min-width:0; }
-html #insights-track .insight-card:not(:first-child) .insight-text h3,
-html .theme-listing-grid .insight-card.listing:not(:first-child) .insight-text h3{ font-size:16px !important; line-height:1.35; margin:4px 0 0; }
-html #insights-track .insight-card:not(:first-child) .insight-text p,
-html #insights-track .insight-card:not(:first-child) .insight-more,
-html .theme-listing-grid .insight-card.listing:not(:first-child) .insight-text p,
-html .theme-listing-grid .insight-card.listing:not(:first-child) .insight-more{ display:none !important; }
-html .insight-date{ font-size:12.5px !important; }
-/* lead card: full-width visual on top */
-html #insights-track .insight-card:first-child{ flex-direction:column; }
-html #insights-track .insight-card:first-child .insight-inset{ width:100%; height:auto !important; aspect-ratio:5/4; }
-html .insight-card .insight-text p{ display:-webkit-box; -webkit-line-clamp:3; -webkit-box-orient:vertical; overflow:hidden; }
-
-/* ---------- 6. Research & Highlights: single column, shorter art ---------- */
-html #view-home .grid-4{ display:grid !important; grid-template-columns:1fr !important; gap:14px; overflow:visible !important; }
-html #view-home .grid-4 > *{ width:auto !important; min-width:0 !important; flex:none !important; }
-html #view-home .grid-4 .card-media{ height:150px !important; }
-html #view-home .promo-card .promo-btn{ margin-top:16px; }
-html #view-home .promo-card{ min-height:0 !important; }
-
-/* ---------- 7. Page headers: drop decorative illustration ---------- */
-html .db-header::after,
-html .db-header::before{ display:none !important; content:none !important; }
-html .db-header{ padding-bottom:8px !important; min-height:0 !important; }
-html .db-header h1{ font-size:30px; }
-
-/* ---------- 8. Dashboards page: one clear reading order per dashboard ---------- */
-/* order: title -> key numbers + summary -> chart -> key findings -> open dashboard + source */
-html .db-tabs{ display:grid !important; grid-template-columns:1fr 1fr; overflow:visible !important; }
-html .db-tab{ justify-content:center; min-height:46px; }
-html .dbcard{ display:flex; flex-direction:column; padding:18px 16px !important; border-radius:18px; }
-html .dbcard > .dbcard-head{ order:0; }
-html .dbcard > .dbcard-body{ order:1; }
-html .dbcard > .db-headbar{ order:2; }
-html .dbcard-head{ padding:0 !important; gap:10px; align-items:flex-start; }
-html .dbcard-head h3{ font-size:21px !important; line-height:1.25; }
-html .dbcard-head-main p{ font-size:14px !important; line-height:1.45; }
-html .dbcard-preview{ display:none !important; }
-html .dbcard-head-right{ flex:none; align-self:flex-start; }
-html .dbcard-body{ display:flex !important; flex-direction:column; gap:16px; padding:16px 0 0 !important; }
-html .dbcard-body > .db-col{ display:contents !important; }
-html .dbcard-body .db-info{ order:1; padding:0 !important; border:0 !important; background:none !important; box-shadow:none !important; margin:0 !important; }
-html .dbcard-body > .dbcard-main{ order:2; padding:0 !important; border:0 !important; background:none !important; box-shadow:none !important; margin:0 !important; }
-html .dbcard-body .dbcard-side{ order:3; }
-html .dbcard-body > .dh-about{ order:4; }
-html .dbcard .dash-tags{ display:none !important; }
-html .dbcard .dash-metrics{ display:grid !important; grid-template-columns:1fr 1fr; gap:10px; margin:0 0 12px; border:0; padding:0; }
-html .dbcard .dash-metrics > div{ background:var(--surface-sunken,#f4f6f6); border-radius:12px; padding:12px; border:0 !important; margin:0 !important; }
-html .dbcard .dash-metrics b{ font-size:26px !important; line-height:1.1; display:block; }
-html .dbcard .dash-metrics span{ font-size:13.5px !important; line-height:1.3; display:block; margin-top:4px; }
-html .dbcard .dash-caption{ font-size:15.5px !important; line-height:1.6; margin:0; }
-html .dbcard .dash-inset{ padding:12px !important; border-radius:14px; }
-
-/* key findings: readable text list instead of tiny chart thumbnails */
-html .dbcard-side{ display:flex !important; flex-direction:column; gap:0; padding:0 !important; border:0 !important; background:none !important; box-shadow:none !important; counter-reset:kf; }
-html .dbcard-side::before{ content:"Key findings"; display:block; font-size:12.5px; font-weight:700; letter-spacing:.08em; text-transform:uppercase; color:var(--accent-ink,#1d6b74); margin:0 0 4px; }
-html .dbcard-side .mini-insight{ display:grid !important; grid-template-columns:28px 1fr; gap:10px; padding:12px 0 !important; margin:0 !important; border:0 !important; border-top:1px solid var(--line,#e6e8e8) !important; background:none !important; box-shadow:none !important; counter-increment:kf; }
-html .dbcard-side .mini-insight::before{ content:counter(kf); width:26px; height:26px; border-radius:50%; background:var(--turmeric-500,#FFD500); color:#231F20; font-weight:700; font-size:13.5px; display:flex; align-items:center; justify-content:center; margin-top:1px; }
-html .dbcard-side .mini-insight-chart{ display:none !important; }
-html .dbcard-side .mini-insight h4{ font-size:15.5px !important; letter-spacing:0 !important; text-transform:none !important; margin:0 0 3px; line-height:1.3; }
-html .dbcard-side .mini-insight p{ font-size:14.5px !important; line-height:1.55; margin:0; }
-
-/* open dashboard + source sit at the end */
-html .db-headbar{ display:flex !important; flex-direction:column-reverse; gap:12px; margin:16px 0 0 !important; padding:16px 0 0 !important; border:0 !important; border-top:1px solid var(--line,#e6e8e8) !important; background:none !important; box-shadow:none !important; }
-html .db-headbar .btn.primary{ width:100%; justify-content:center; min-height:48px; margin:0; }
-html .db-headbar .dh-src,
-html .db-headbar .dh-sub{ font-size:13px !important; line-height:1.5; }
-
-/* ---------- 9. General phone hygiene ---------- */
-/* scroll fix: "hidden" on both html and body turns body into a second scroller on Chrome/Android,
-   which makes the page stick at the bottom. clip stops sideways overflow without creating a scroller. */
-html{ overflow-x:clip !important; overflow-y:visible !important; }
-html body{ overflow-x:clip !important; overflow-y:visible !important; }
-html a, html button{ touch-action:manipulation; }
-
-/* NSE sector chart: long sector names sit left of the viewBox; give them room on phones */
-html #db-nse-svg{ overflow:visible; margin-left:34px; width:calc(100% - 34px) !important; }
-html .db-headbar{ border-radius:0 !important; }
-html .db-headbar > *{ background:none !important; border:0 !important; box-shadow:none !important; padding:0 !important; }
-
-html .insight-card:not(:first-child) .insight-text h3{ display:block !important; -webkit-line-clamp:unset !important; overflow:visible !important; max-height:none !important; }
-
-
-/* long unbroken text (citation URLs) must wrap instead of widening the card */
-html .dbcard,
-html .dbcard *{ min-width:0; }
-html .dbcard{ max-width:100%; overflow:hidden; }
-html .dh-cite,
-html .dh-citepanel,
-html .dh-about,
-html .dh-src,
-html .dh-sub{ overflow-wrap:anywhere; word-break:break-word; max-width:100%; }
-html .dh-trust .dh-tbar{ flex-wrap:wrap; }
-
-/* compact insight rows: keep a small chart preview (white panel, slightly larger thumbnail) */
-html #insights-track .insight-card:not(:first-child),
-html .theme-listing-grid .insight-card.listing:not(:first-child){ grid-template-columns:112px 1fr; }
-html #insights-track .insight-card:not(:first-child) .insight-inset,
-html .theme-listing-grid .insight-card.listing:not(:first-child) .insight-inset{ width:112px !important; height:112px !important; }
-html #insights-track .insight-card:not(:first-child) .insight-inset:not(.human-media),
-html .theme-listing-grid .insight-card.listing:not(:first-child) .insight-inset:not(.human-media){ background:#fff !important; border:1px solid var(--line,#e6e8e8); padding:5px !important; display:flex !important; align-items:center; justify-content:center; }
-
-/* compact 112px thumbnails are too small for a title; the headline beside them describes the chart */
-html #insights-track .insight-card:not(:first-child) .inset-title,
-html .theme-listing-grid .insight-card.listing:not(:first-child) .inset-title{ display:none !important; }
-
-/* Data and Insights: featured work cards sit right after their own section (no scroll-driven swapping) */
-html #view-insights .insights-layout{ display:flex !important; flex-direction:column; gap:0; }
-html #view-insights .theme-accordion,
-html #view-insights .featured-work-panel{ display:contents !important; }
-html #view-insights .featured-work-panel > h2{ display:none !important; }
-html #view-insights .theme-block[data-theme-key="employment"]{ order:1; }
-html #view-insights .fw-card[data-theme-card="employment"]{ order:2; }
-html #view-insights .theme-block[data-theme-key="entrepreneurship"]{ order:3; }
-html #view-insights .fw-card[data-theme-card="entrepreneurship"]{ order:4; }
-html #view-insights .theme-block[data-theme-key="infrastructure"]{ order:5; }
-html #view-insights .fw-card:not([data-retired]){ display:flex !important; margin:16px 0 28px !important; }
-html #view-insights .fw-card[data-retired]{ display:none !important; }
-html #view-insights .theme-block{ margin:0 !important; }
-html #db-nse-inset{ overflow:visible !important; max-height:none !important; }
-
-}
-</style>
 </body>
 </html>
