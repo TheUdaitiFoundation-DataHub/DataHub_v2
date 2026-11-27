@@ -1759,6 +1759,36 @@ main,.sitebar-inner,.hero-video__inner{ max-width:calc(var(--page-max) + 2*var(-
   .sr-ext{ position:static; padding:0 14px 14px; }
 }
 </style>
+<style id="hero-carousel-css">
+/* ===== Home hero carousel: network hero + ASUSE + PLFS banners (27 Nov 2026) ===== */
+.hero-carousel{ position:relative; width:100vw; margin-left:calc(50% - 50vw); margin-bottom:8px; height:clamp(370px, 34vw, 520px); overflow:hidden; background:#fff; isolation:isolate; }
+.hc-track{ position:absolute; inset:0; }
+.hc-slide{ position:absolute; inset:0; opacity:0; visibility:hidden; transition:opacity .6s ease, visibility 0s linear .6s; }
+.hc-slide.is-active{ opacity:1; visibility:visible; transition:opacity .6s ease, visibility 0s; z-index:1; }
+.hero-carousel .hc-slide > .hero-video{ position:absolute !important; inset:0; width:100% !important; height:100% !important; min-height:0 !important; margin:0 !important; }
+.hc-banner{ position:absolute; inset:0; display:flex; align-items:center; justify-content:center; overflow:hidden; background:#f4efe6; text-decoration:none; }
+.hc-bg{ position:absolute; inset:-40px; width:calc(100% + 80px); height:calc(100% + 80px); object-fit:cover; filter:blur(36px) saturate(1.05); opacity:.85; transform:scale(1.05); }
+.hc-img{ position:relative; height:100%; width:auto; max-width:100%; object-fit:contain; box-shadow:0 0 60px rgba(0,0,0,.12); transition:transform .35s ease; }
+.hc-banner:hover .hc-img{ transform:scale(1.012); }
+.hc-banner:focus-visible{ outline:3px solid var(--ui-yellow,#FFD400); outline-offset:-6px; }
+.hc-sr{ position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap; }
+.hc-controls{ position:absolute; right:max(16px, calc((100vw - 1280px)/2 + 24px)); bottom:16px; z-index:5; display:flex; align-items:center; gap:6px; padding:5px; border-radius:999px; background:rgba(255,255,255,.94); box-shadow:0 4px 18px rgba(35,31,32,.16); }
+.hc-btn{ width:34px; height:34px; border-radius:50%; border:0; background:transparent; color:var(--ui-black,#231F20); display:inline-flex; align-items:center; justify-content:center; cursor:pointer; }
+.hc-btn:hover{ background:rgba(35,31,32,.07); }
+.hc-btn svg{ width:18px; height:18px; fill:none; stroke:currentColor; stroke-width:2.2; stroke-linecap:round; stroke-linejoin:round; }
+.hc-play .i-play{ display:none; fill:currentColor; stroke:none; }
+.hc-play[data-paused="true"] .i-play{ display:block; } .hc-play[data-paused="true"] .i-pause{ display:none; }
+.hc-dots{ display:flex; align-items:center; gap:2px; }
+.hc-dot{ width:22px; height:34px; border:0; background:transparent; cursor:pointer; position:relative; padding:0; }
+.hc-dot::after{ content:""; position:absolute; left:50%; top:50%; width:8px; height:8px; margin:-4px 0 0 -4px; border-radius:999px; background:rgba(35,31,32,.28); transition:width .25s ease, margin .25s ease, background .25s ease; }
+.hc-dot[aria-current="true"]::after{ width:20px; margin-left:-10px; background:var(--brand-teal-ink,#1d6b74); }
+.hc-btn:focus-visible,.hc-dot:focus-visible{ outline:2px solid var(--brand-teal,#009FA2); outline-offset:1px; border-radius:999px; }
+.hero-carousel .hero-scroll{ z-index:3; }
+@media (prefers-reduced-motion: reduce){ .hc-slide,.hc-slide.is-active{ transition:none; } .hc-img{ transition:none; } }
+/* phones: the hero (and so this carousel) stays hidden, as requested earlier */
+html[data-device="phone"] .hero-carousel{ display:none !important; }
+@media (max-width:720px){ .hero-carousel{ display:none !important; } }
+</style>
 <style id="feedback-css">
 /* ===== Site feedback (header button + dialog) — 26 Nov 2026 ===== */
 .fb-open{ display:inline-flex; align-items:center; gap:7px; height:40px; padding:6px 16px; border-radius:999px; background:#fff; color:var(--ui-black,#231F20); border:1px solid #fff; font:inherit; font-size:14.5px; font-weight:600; cursor:pointer; white-space:nowrap; }
@@ -2330,14 +2360,30 @@ html #db-nse-inset{ overflow:visible !important; max-height:none !important; }
       </div>
     </div>
 
-    <section class="hero-video" aria-label="Introduction">
+    <div class="hero-carousel" id="hero-carousel" role="region" aria-roledescription="carousel" aria-label="Highlights">
+<div class="hc-track" id="hc-track" aria-live="off">
+<div class="hc-slide is-active" role="group" aria-roledescription="slide" aria-label="1 of 3: Figures in focus"><section class="hero-video" aria-label="Introduction">
       <div class="hero-net" id="hero-net" aria-hidden="true"><canvas id="hero-net-cv"></canvas></div>
       <div class="hero-video__scrim" aria-hidden="true"></div>
       <a class="hero-scroll" href="#featured-dashboards" aria-label="Scroll to featured dashboards"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-down"/></svg></a>
       <div class="hero-video__inner">
         <h1>Figures in focus: <span class="hl">Women's workforce participation.</span></h1>
       </div>
-    </section>
+    </section></div>
+<div class="hc-slide" role="group" aria-roledescription="slide" aria-label="2 of 3: ASUSE 2025 data story" aria-hidden="true"><a class="hc-banner" href="https://www.udaiti.org/ASUSE_Data_Pack_13.11.html" target="_blank" rel="noopener"><img class="hc-bg" src="assets/asuse-story-960-40ea51f9.webp" alt="" aria-hidden="true" width="960" height="629" decoding="async" loading="lazy"><img class="hc-img" src="assets/asuse-story-960-40ea51f9.webp" srcset="assets/asuse-story-960-40ea51f9.webp 960w, assets/asuse-story-1440-333a18f6.webp 1440w" sizes="(max-width:1180px) 70vw, 940px" alt="New data story, ASUSE 2025: A snapshot of female-headed establishments in India. Key insights on growth and structure, sectors and states, registration and access to credit." width="960" height="629" decoding="async" loading="lazy"><span class="hc-sr">Explore the ASUSE 2025 data pack (opens in a new tab)</span></a></div>
+<div class="hc-slide" role="group" aria-roledescription="slide" aria-label="3 of 3: Where are India's working women?" aria-hidden="true"><a class="hc-banner" href="https://www.udaiti.org/india-women-work" target="_blank" rel="noopener"><img class="hc-bg" src="assets/plfs-story-960-1c671fc6.webp" alt="" aria-hidden="true" width="960" height="540" decoding="async" loading="lazy"><img class="hc-img" src="assets/plfs-story-960-1c671fc6.webp" srcset="assets/plfs-story-960-1c671fc6.webp 960w, assets/plfs-story-1600-42ceb4f2.webp 1600w" sizes="(max-width:1180px) 70vw, 940px" alt="New, July 2026: Where are India's working women? 114 million women are self-employed in India, yet half of them remain unpaid. Data insights from the Periodic Labour Force Survey." width="960" height="540" decoding="async" loading="lazy"><span class="hc-sr">Explore the PLFS data pack: Where are India's working women? (opens in a new tab)</span></a></div>
+</div>
+<div class="hc-controls">
+<button type="button" class="hc-btn" data-hc="prev" aria-label="Previous slide"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg></button>
+<div class="hc-dots" role="group" aria-label="Choose slide">
+<button type="button" class="hc-dot" data-hc-go="0" aria-label="Slide 1: Figures in focus" aria-current="true"></button>
+<button type="button" class="hc-dot" data-hc-go="1" aria-label="Slide 2: ASUSE 2025 data story"></button>
+<button type="button" class="hc-dot" data-hc-go="2" aria-label="Slide 3: Where are India's working women?"></button>
+</div>
+<button type="button" class="hc-btn" data-hc="next" aria-label="Next slide"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg></button>
+<button type="button" class="hc-btn hc-play" data-hc="toggle" aria-label="Pause slideshow"><svg class="i-pause" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6v12M15 6v12"/></svg><svg class="i-play" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5.5v13l10.5-6.5z"/></svg></button>
+</div>
+</div>
 
 
     <div class="section" id="featured-dashboards">
@@ -5127,6 +5173,48 @@ wrap.addEventListener('focusout',hide);
   if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',fromHash); else setTimeout(fromHash,0);
 })();
 
+</script>
+<script id="hero-carousel-js">
+/* Home hero carousel (27 Nov 2026). Auto-advances every 7 s; stops for good once someone uses
+   the controls; pauses on hover or keyboard focus and when the tab is hidden; never auto-plays
+   for people who prefer reduced motion. */
+(function(){
+  var root=document.getElementById('hero-carousel'); if(!root) return;
+  var slides=[].slice.call(root.querySelectorAll('.hc-slide')), dots=[].slice.call(root.querySelectorAll('.hc-dot'));
+  var track=document.getElementById('hc-track'), toggle=root.querySelector('[data-hc="toggle"]');
+  var i=0, timer=null, DELAY=7000, stopped=false, hover=false;
+  var reduced=window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+  function show(n){
+    i=(n+slides.length)%slides.length;
+    slides.forEach(function(s,k){ var on=k===i; s.classList.toggle('is-active',on);
+      if(on){ s.removeAttribute('aria-hidden'); s.removeAttribute('inert'); } else { s.setAttribute('aria-hidden','true'); s.setAttribute('inert',''); } });
+    dots.forEach(function(d,k){ if(k===i) d.setAttribute('aria-current','true'); else d.removeAttribute('aria-current'); });
+  }
+  function playing(){ return !stopped; }
+  function schedule(){ clearTimeout(timer); if(playing() && !hover && !document.hidden) timer=setTimeout(function(){ show(i+1); schedule(); },DELAY); }
+  function setPaused(p){ stopped=p; toggle.setAttribute('data-paused',p?'true':'false');
+    toggle.setAttribute('aria-label',p?'Play slideshow':'Pause slideshow'); track.setAttribute('aria-live',p?'polite':'off'); schedule(); }
+  function userStop(){ if(!stopped) setPaused(true); }
+  root.addEventListener('click',function(e){
+    var b=e.target.closest('[data-hc],[data-hc-go]'); if(!b) return;
+    var a=b.getAttribute('data-hc');
+    if(a==='toggle'){ setPaused(!stopped); return; }
+    userStop();
+    if(a==='prev') show(i-1); else if(a==='next') show(i+1); else show(+b.getAttribute('data-hc-go'));
+  });
+  root.addEventListener('mouseenter',function(){ hover=true; schedule(); });
+  root.addEventListener('mouseleave',function(){ hover=false; schedule(); });
+  root.addEventListener('focusin',function(){ hover=true; schedule(); });
+  root.addEventListener('focusout',function(e){ if(!root.contains(e.relatedTarget)){ hover=false; schedule(); } });
+  document.addEventListener('visibilitychange',schedule);
+  /* swipe on touch screens (tablets) */
+  var x0=null;
+  root.addEventListener('touchstart',function(e){ x0=e.touches[0].clientX; },{passive:true});
+  root.addEventListener('touchend',function(e){ if(x0===null) return; var dx=e.changedTouches[0].clientX-x0; x0=null;
+    if(Math.abs(dx)>50){ userStop(); show(i+(dx<0?1:-1)); } },{passive:true});
+  show(0);
+  if(reduced) setPaused(true); else schedule();
+})();
 </script>
 
 
