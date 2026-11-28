@@ -3,6 +3,8 @@
 <head>
 <meta name="datahub-search-index" content="search-index.json">
 <meta charset="utf-8">
+<script id="subpath-slash">/* If opened as /datahub (no trailing slash), relative paths would point at the site root. Add the slash. */
+(function(){ var p=location.pathname; if(location.protocol!=='file:' && p.length>1 && !/\/$/.test(p) && !/\.[a-z0-9]+$/i.test(p)){ location.replace(p+'/'+location.search+location.hash); } })();</script>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <script id="device-detect">/* adds data-device="phone|tablet|desktop" to <html>. Uses media queries, not innerWidth, because Chrome on Android can report the 980px desktop width before the page lays out. Phone CSS also applies by screen width without this script. (2026-11-26) */
 (function(){var d=document.documentElement,mm=window.matchMedia;function q(x){return !!(mm&&mm(x).matches);}
@@ -4644,9 +4646,20 @@ wrap.addEventListener('focusout',hide);
   setSyn(SYN);
   // ---- search configuration file (synonyms, keywords, external research). Falls back to DEFAULT_CFG. ----
   function validCfg(c){
-    if(!c || c.schema!=='udaiti-datahub-search/1' || !Array.isArray(c.synonyms) || typeof c.keywords!=='object' || !Array.isArray(c.external)) return false;
-    if(!c.synonyms.every(function(g){ return Array.isArray(g) && g.every(function(x){ return typeof x==='string'; }); })) return false;
-    return c.external.every(function(x){ return x && typeof x.title==='string' && /^https:\/\//.test(x.url||''); });
+    /* Every field the search code touches is type-checked here, so a malformed file is rejected
+       up front and the built-in copy stays in use (hardened 27 Nov 2026). */
+    function strs(a){ return Array.isArray(a) && a.every(function(x){ return typeof x==='string' && x.length<=300; }); }
+    function optStr(v){ return v===undefined || v===null || typeof v==='string'; }
+    if(!c || typeof c!=='object' || c.schema!=='udaiti-datahub-search/1') return false;
+    if(!Array.isArray(c.synonyms) || c.synonyms.length>2000 || !c.synonyms.every(function(g){ return strs(g) && g.length>0; })) return false;
+    if(!c.keywords || typeof c.keywords!=='object' || Array.isArray(c.keywords)) return false;
+    if(!Object.keys(c.keywords).every(function(k){ return strs(c.keywords[k]); })) return false;
+    if(!Array.isArray(c.external) || c.external.length>500) return false;
+    return c.external.every(function(x){
+      return x && typeof x==='object' && typeof x.title==='string' && x.title.trim() && typeof x.url==='string' && /^https:\/\//.test(x.url)
+        && optStr(x.id) && optStr(x.summary) && optStr(x.kind) && optStr(x.theme) && optStr(x.date)
+        && (x.sections===undefined || (Array.isArray(x.sections) && x.sections.every(function(t){ return t && typeof t==='object' && optStr(t.title) && optStr(t.text); })));
+    });
   }
   var cfgReady=null;
   function loadCfg(){
@@ -4654,8 +4667,8 @@ wrap.addEventListener('focusout',hide);
     var meta=document.querySelector('meta[name="datahub-search-index"]'), url=meta?meta.getAttribute('content'):'';
     if(!url || location.protocol==='file:' || !window.fetch){ cfgReady=Promise.resolve(); return cfgReady; }
     cfgReady=fetch(url,{cache:'no-cache',credentials:'same-origin'}).then(function(r){ return r.ok?r.json():null; })
-      .then(function(c){ if(validCfg(c)){ CFG=c; setSyn(c.synonyms); window.DATAHUB_SEARCH_VERSION=c.version; } else if(c){ console.warn('DataHub search: index file invalid, using built-in copy'); } })
-      .catch(function(){});
+      .then(function(c){ if(validCfg(c)){ CFG=c; setSyn(c.synonyms); window.DATAHUB_SEARCH_VERSION=String(c.version||'')+' (search-index.json)'; console.info('DataHub search: using search-index.json, version '+c.version); } else { console.warn('DataHub search: search-index.json '+(c?'is invalid':'not found')+', using the built-in copy ('+DEFAULT_CFG.version+')'); } })
+      .catch(function(){ console.warn('DataHub search: search-index.json could not be read, using the built-in copy ('+DEFAULT_CFG.version+')'); });
     return cfgReady;
   }
   window.DATAHUB_SEARCH_VERSION=DEFAULT_CFG.version+' (built-in)';
@@ -4789,6 +4802,15 @@ wrap.addEventListener('focusout',hide);
     return idx;
   }
   function run(q){
+    try{ return runSearch(q); }
+    catch(e){
+      if(CFG===DEFAULT_CFG) throw e;
+      console.warn('DataHub search: search-index.json broke search, switching to the built-in copy', e);
+      CFG=DEFAULT_CFG; setSyn(DEFAULT_CFG.synonyms); window.DATAHUB_SEARCH_VERSION=DEFAULT_CFG.version+' (built-in, fallback)';
+      return runSearch(q);
+    }
+  }
+  function runSearch(q){
     var R=rank(buildIndex(), q); state.corrected=R.corrected;
     var groupBest={}; R.results.forEach(function(x){ groupBest[x.r.type]=Math.max(groupBest[x.r.type]||0,x.score); });
     return R.results.sort(function(a,b){ return a.r.type===b.r.type ? b.score-a.score : (groupBest[b.r.type]-groupBest[a.r.type]); })
